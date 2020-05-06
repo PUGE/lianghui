@@ -58,8 +58,6 @@
     created: function () {
       // 创建3D场景
       this.init()
-      // 添加模型
-      // this.loadCollada()
       // 添加主标题文字
       this.addText()
       // 添加环绕的线
@@ -81,13 +79,14 @@
       this.data.scene = new THREE.Scene
       this.data.renderer = new THREE.WebGLRenderer({
         antialias: true,
-        alpha: true
+        alpha: true,
+        precision: "highp"
       })
       this.data.renderer.setSize(this.data.width, this.data.height)
       this.data.renderer.sortObjects = true
       this.data.WebGLCanvas.appendChild(this.data.renderer.domElement)
       this.data.camera = new THREE.PerspectiveCamera(400, this.data.width / this.data.height, 1, 2000)
-      this.data.camerapos.positionZ = this.data.camera.position.z = 36
+      this.data.camerapos.positionZ = this.data.camera.position.z = 20
       this.data.camerapos.positionY = this.data.camera.position.y = 6
       this.data.camerapos.positionX = 0
       this.data.group = new THREE.Group
@@ -149,23 +148,6 @@
       // light.position.y = 1e3,
       // light.position.z = 3e3 * Math.cos(4 * r)
     },
-    loadCollada: function () {
-      console.log("Loading...")
-      const loader = new THREE.ColladaLoader;
-      // 材质
-      // @|rmdht.png|
-      loader.load("@|untitled.dae|", (e) => {
-        planet = e.scene;
-        // e.skins[0];
-        TweenLite.to(planet.scale, 2, {
-          x: 0.012,
-          y: 0.012,
-          z: 0.012,
-          ease: Back.easeOut
-        }),
-        this.data.group.add(planet)
-      })
-    },
     addCircle: function(e) {
       // 分段个数
       let segment = e * 10
@@ -182,7 +164,7 @@
       var l = new THREE.LineBasicMaterial({
         color: 16777215,
         linewidth: 1,
-        opacity: .4,
+        opacity: .15,
         transparent: true
       }),
       c = new THREE.Line(i, l);
@@ -193,7 +175,7 @@
     },
     addLine: function () {
       // 圆圈
-      var o = this.addCircle(14);
+      var o = this.addCircle(8.2);
       this.data.scene.add(o)
       TweenLite.to(o.scale, .7, {
         x: 1,
@@ -202,7 +184,7 @@
         ease: Back.easeOut,
         delay: .8
       });
-      var s = this.addCircle(16);
+      var s = this.addCircle(9.6);
       this.data.scene.add(s)
 
       // 圆圈
@@ -213,7 +195,7 @@
         ease: Back.easeOut,
         delay: .7
       });
-      var l = this.addCircle(10);
+      var l = this.addCircle(7);
       this.data.scene.add(l)
       
       TweenLite.to(l.scale, .7, {
@@ -227,16 +209,24 @@
     addText: function() {
       // 文字
       new THREE.TextureLoader().load("@|text.png|", texture => {
-        var n = new THREE.SpriteMaterial({
+        texture.minFilter = THREE.LinearFilter
+        
+        var textObj = new THREE.SpriteMaterial({
           map: texture,
           color: 16777215
         })
-        var a = new THREE.Sprite(n);
-        a.scale.set(20, 10, 10)
+        textObj.opacity = 0
+        var a = new THREE.Sprite(textObj);
+        a.scale.set(14, 6, 1)
         // a.rotation.copy(this.data.camera.rotation)
-        a.translateY(1)
+        a.translateY(-2)
         a.updateMatrix()
+        a.position.z = 0
         this.data.scene.add(a);
+        TweenLite.to(textObj, 2, {
+          delay: 0,
+          opacity: 1
+        })
       })
     },
     addMessage: function () {
@@ -259,45 +249,55 @@
       u.lineWidth = o
       u.fillStyle = "#fcd681"
       // 文字 x y
-      u.fillText(text, 290, 225);
+      u.fillText(text, 310, 225);
       var d = new THREE.Texture(canvasTemp);
+      d.minFilter = THREE.LinearFilter
       d.needsUpdate = true;
       var f = new THREE.SpriteMaterial({
-        map: d
+        map: d,
+        opacity: 0
       }),
       E = new THREE.Sprite(f)
       E.scale.set(5, 5, 5);
       return E
     },
     addWishes: function (ind, text) {
-      const opacity = 3 * Math.random() / 10 + .7
       var n = 2.5 * ind * .175 + Math.PI
       // 小图标
       const texture = new THREE.TextureLoader().load("@|blove.png|")
+      texture.minFilter = THREE.LinearFilter
       let part = new THREE.Sprite(new THREE.SpriteMaterial({
         map: texture,
         color: 16777215,
-        opacity: opacity,
+        opacity: 0,
         transparent: true
       }))
       // console.log(part)
-      part.scale.set(1, 1, 1);
+      part.scale.set(0.5, 0.5, 0.5);
       // part.position.x = 0,
       // part.position.y = 0,
       // part.position.z = 0;
       part.name = ind
       this.data.group2.add(part)
       // 信息
-      var textTemp = this.makeTextSprite(text, {}, "", opacity);
+      var textTemp = this.makeTextSprite(text, {}, "", 0);
       // u.position.y = -2
       part.add(textTemp)
-      
+      TweenLite.to(part.material, .6, {
+        delay: .9 + .1 * ind,
+        opacity: 1
+      })
+      TweenLite.to(part.children[0].material, .6, {
+        delay: .9 + .1 * ind,
+        opacity: 1
+      })
       TweenLite.to(part.position, .6, {
-        x: 15 * Math.sin(n),
-        y: -(ind / 3) + 5 * Math.random(),
-        z: 15 * Math.cos(n),
+        x: 7.5 * Math.sin(n),
+        y: -(ind / 12) + 2 * Math.random(),
+        z: 8.5 * Math.cos(n),
         ease: Back.easeOut,
-        delay: .9 + .1 * ind
+        delay: .9 + .1 * ind,
+        opacity: 1
       })
     }
   }
