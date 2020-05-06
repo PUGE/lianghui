@@ -1,0 +1,323 @@
+<template lang="pug">
+.home
+  //- 底部logo
+  img.logo(src="@|logo.png|")
+  #WebGLCanvas
+</template>
+
+<script>
+  module.exports = {
+    data: {
+      mouse: null,
+      scene: null,
+      renderer: null,
+      WebGLCanvas: null,
+      width: null,
+      height: null,
+      camera: null,
+      camerapos: {},
+      raycaster: null,
+      light: null,
+      controls: null,
+      ecart: 0,
+      isDrag: false,
+      targetRotation: 0,
+      stopTimer: true,
+      mockData: {
+        "wishes": [{
+          "name": "对外开放"
+        }, {
+          "name": "精准扶贫"
+        }, {
+          "name": "营商环境"
+        }, {
+          "name": "社会保障"
+        }, {
+          "name": "居民收入"
+        }, {
+          "name": "就业创业"
+        }, {
+          "name": "生态环保"
+        }, {
+          "name": "农业农村"
+        }, {
+          "name": "对外开放"
+        }, {
+          "name": "经济金融"
+        }, {
+          "name": "健康中国"
+        }, {
+          "name": "群众办事"
+        }, {
+          "name": "依法治国"
+        }, {
+          "name": "乡村振兴"
+        }]
+      }
+    },
+    created: function () {
+      // 创建3D场景
+      this.init()
+      // 添加模型
+      // this.loadCollada()
+      // 添加主标题文字
+      this.addText()
+      // 添加环绕的线
+      this.addLine()
+      // 添加圆球
+      this.addMessage()
+      const animate = () => {
+        requestAnimationFrame(animate)
+        this.data.controls.update()
+        this.render()
+      }
+      animate()
+    },
+    init: function () {
+      this.data.width = window.innerWidth
+      this.data.height = window.innerHeight
+      this.data.WebGLCanvas = document.getElementById("WebGLCanvas")
+      this.data.mouse = new THREE.Vector2
+      this.data.scene = new THREE.Scene
+      this.data.renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true
+      })
+      this.data.renderer.setSize(this.data.width, this.data.height)
+      this.data.renderer.sortObjects = true
+      this.data.WebGLCanvas.appendChild(this.data.renderer.domElement)
+      this.data.camera = new THREE.PerspectiveCamera(400, this.data.width / this.data.height, 1, 2000)
+      this.data.camerapos.positionZ = this.data.camera.position.z = 36
+      this.data.camerapos.positionY = this.data.camera.position.y = 6
+      this.data.camerapos.positionX = 0
+      this.data.group = new THREE.Group
+      this.data.group2 = new THREE.Group
+      this.data.group3 = new THREE.Group
+      this.data.scene.add(this.data.group)
+      this.data.scene.add(this.data.group2)
+      this.data.scene.add(this.data.group3)
+      this.data.raycaster = new THREE.Raycaster
+      // 添加灯光
+      this.data.light = new THREE.PointLight(16777215, 1.5)
+      this.data.light.position.set(100, 100, 200)
+      this.data.scene.add(this.data.light);
+      // 添加灯光2
+      const light2 = new THREE.HemisphereLight(2865844, 2865844, 1.25)
+      light2.color.setHex(15239532)
+      light2.groundColor.setHSL(.1, .8, .4)
+      light2.position.set( - 1, 1.75, 1)
+      this.data.scene.add(light2)
+      // document.addEventListener("mousemove", onDocumentMouseMove2, false),
+      // WebGLCanvas.addEventListener("mousedown", onDocumentMouseDown, false),
+      // WebGLCanvas.addEventListener("touchstart", onDocumentTouchStart, false),
+      // WebGLCanvas.addEventListener("touchmove", onDocumentTouchMove, false),
+      // window.addEventListener("resize", onWindowResize, false),
+      this.data.controls = new THREE.OrbitControls(this.data.camera, this.data.renderer.domElement, this.data.renderer.domElement)
+      this.data.controls.minDistance = 22
+      this.data.controls.maxDistance = 100
+      this.data.controls.maxPolarAngle = Math.PI / 1.8
+      this.data.controls.minPolarAngle = 1
+    },
+    render: function () {
+      if (this.data.isDrag) {
+        this.data.ecart = .1 * (this.data.targetRotation - this.data.group.rotation.y)
+        this.data.stopTimer = false
+        setTimeout(() => {
+          this.data.stopTimer = true
+        }, 3000)
+        this.data.isIntro = false
+      } else {
+        if (this.data.stopTimer) {
+          this.data.ecart = -1 / 800
+        } else {
+          this.data.ecart = .1 * (this.data.targetRotation - this.data.group.rotation.y)
+        }
+      }
+      this.data.isIntro || (this.data.group.rotation.y += this.data.ecart)
+      this.data.group2.rotation.y += .7 * this.data.ecart
+      this.data.group3.rotation.y += .9 * this.data.ecart
+      this.data.camera.lookAt(this.data.scene.position);
+      // var e = new THREE.Vector3(mouse.x, mouse.y, 1).unproject(camera);
+      // raycaster.set(camera.position, e.sub(camera.position).normalize());
+      // // console.log(objects)
+      // // return
+      // // var t = raycaster.intersectObjects(objects);
+      // // t.length > 0 ? INTERSECTED != t[0].object && (INTERSECTED = t[0].object, WebGLCanvas.classList.add("cursoron")) : (WebGLCanvas.classList.remove("cursoron"), INTERSECTED = null)
+      this.data.renderer.render(this.data.scene, this.data.camera);
+      // var r = 5e-4 * Date.now();
+      // light.position.x = 3e3 * Math.sin(4 * r),
+      // light.position.y = 1e3,
+      // light.position.z = 3e3 * Math.cos(4 * r)
+    },
+    loadCollada: function () {
+      console.log("Loading...")
+      const loader = new THREE.ColladaLoader;
+      // 材质
+      // @|rmdht.png|
+      loader.load("@|untitled.dae|", (e) => {
+        planet = e.scene;
+        // e.skins[0];
+        TweenLite.to(planet.scale, 2, {
+          x: 0.012,
+          y: 0.012,
+          z: 0.012,
+          ease: Back.easeOut
+        }),
+        this.data.group.add(planet)
+      })
+    },
+    addCircle: function(e) {
+      // 分段个数
+      let segment = e * 10
+      let r = e, i = new THREE.Geometry, n = i.vertices, a = 2 * Math.PI / segment
+      for (let o = 0; segment > o; o++) {
+        const s = r * Math.cos(a * o)
+        const h = r * Math.sin(a * o)
+        n.push(new THREE.Vector3(s, h, 0))
+      }
+      // 闭合线段
+      n.push(new THREE.Vector3(r * Math.cos(0), r * Math.sin(0), 0))
+      // i.computeLineDistances();
+      // 设置线的属性
+      var l = new THREE.LineBasicMaterial({
+        color: 16777215,
+        linewidth: 1,
+        opacity: .4,
+        transparent: true
+      }),
+      c = new THREE.Line(i, l);
+      c.computeLineDistances()
+      c.position.y = -1
+      c.rotation.x = Math.PI / 2
+      return c
+    },
+    addLine: function () {
+      // 圆圈
+      var o = this.addCircle(14);
+      this.data.scene.add(o)
+      TweenLite.to(o.scale, .7, {
+        x: 1,
+        y: 1,
+        z: 1,
+        ease: Back.easeOut,
+        delay: .8
+      });
+      var s = this.addCircle(16);
+      this.data.scene.add(s)
+
+      // 圆圈
+      TweenLite.to(s.scale, .7, {
+        x: 1,
+        y: 1,
+        z: 1,
+        ease: Back.easeOut,
+        delay: .7
+      });
+      var l = this.addCircle(10);
+      this.data.scene.add(l)
+      
+      TweenLite.to(l.scale, .7, {
+        x: 1,
+        y: 1,
+        z: 1,
+        ease: Back.easeOut,
+        delay: .9
+      })
+    },
+    addText: function() {
+      // 文字
+      new THREE.TextureLoader().load("@|text.png|", texture => {
+        var n = new THREE.SpriteMaterial({
+          map: texture,
+          color: 16777215
+        })
+        var a = new THREE.Sprite(n);
+        a.scale.set(20, 10, 10)
+        // a.rotation.copy(this.data.camera.rotation)
+        a.translateY(1)
+        a.updateMatrix()
+        this.data.scene.add(a);
+      })
+    },
+    addMessage: function () {
+      let ind = 0
+      this.data.mockData.wishes.forEach(element => {
+        this.addWishes(ind++, element.name)
+      })
+    },
+    makeTextSprite: function (text, config = {}, r, i) {
+      var n = config.hasOwnProperty("fontface") ? config.fontface: "Raleway",
+      a = config.hasOwnProperty("fontsize") ? config.fontsize: 40,
+      o = config.hasOwnProperty("borderThickness") ? config.borderThickness: 4,
+      canvasTemp = document.createElement("canvas");
+      canvasTemp.width = 480,
+      canvasTemp.height = 480;
+      var u = canvasTemp.getContext("2d");
+      u.font = a + "px " + n,
+      u.textBaseline = "top";
+      u.strokeStyle = "#fcd681"
+      u.lineWidth = o
+      u.fillStyle = "#fcd681"
+      // 文字 x y
+      u.fillText(text, 290, 225);
+      var d = new THREE.Texture(canvasTemp);
+      d.needsUpdate = true;
+      var f = new THREE.SpriteMaterial({
+        map: d
+      }),
+      E = new THREE.Sprite(f)
+      E.scale.set(5, 5, 5);
+      return E
+    },
+    addWishes: function (ind, text) {
+      const opacity = 3 * Math.random() / 10 + .7
+      var n = 2.5 * ind * .175 + Math.PI
+      // 小图标
+      const texture = new THREE.TextureLoader().load("@|blove.png|")
+      let part = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: texture,
+        color: 16777215,
+        opacity: opacity,
+        transparent: true
+      }))
+      // console.log(part)
+      part.scale.set(1, 1, 1);
+      // part.position.x = 0,
+      // part.position.y = 0,
+      // part.position.z = 0;
+      part.name = ind
+      this.data.group2.add(part)
+      // 信息
+      var textTemp = this.makeTextSprite(text, {}, "", opacity);
+      // u.position.y = -2
+      part.add(textTemp)
+      
+      TweenLite.to(part.position, .6, {
+        x: 15 * Math.sin(n),
+        y: -(ind / 3) + 5 * Math.random(),
+        z: 15 * Math.cos(n),
+        ease: Back.easeOut,
+        delay: .9 + .1 * ind
+      })
+    }
+  }
+</script>
+
+
+<style lang="less">
+.home {
+  background-image: url('@|bg.jpg|');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+.logo {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2%;
+  margin: auto;
+  user-select: none;
+  pointer-events: none;
+}
+</style>
