@@ -4,7 +4,7 @@
   img.logo(src="@|logo.png|")
   //- img.left-logo(src="@|text.png|")
   //- img.silk.ani-float(src="@|silk.png|")
-  video(id="video-index" muted="true" loop="true" src="@|bg.mp4|" poster="@|bg.jpg|" style="width: 100%;")
+  video.bg-video(id="video-index" muted="true" loop="true" src="@|bg.mp4|" poster="@|bg.jpg|" style="width: 100%;")
   #WebGLCanvas
 </template>
 
@@ -30,7 +30,7 @@
       clickObjects: [],
       mockData: {
         "wishes": [{
-          "name": "对外开放",
+          "name": "对外开放 122222",
           distance: -3
         }, {
           "name": "精准扶贫",
@@ -548,5 +548,14 @@
   left: 8%;
   top: 6%;
   opacity: 0;
+}
+.bg-video {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
 }
 </style>
