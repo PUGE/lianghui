@@ -2,8 +2,9 @@
 .home
   //- 底部logo
   img.logo(src="@|logo.png|")
+  img.left-logo(src="@|text.png|")
   //- img.silk.ani-float(src="@|silk.png|")
-  video(id="video-index" muted="true" loop="true" src="@|bg.mp4|" poster="@|bg.jpg|" style="width: auto;")
+  video(id="video-index" muted="true" loop="true" src="@|bg.mp4|" poster="@|bg.jpg|" style="width: 100%;")
   #WebGLCanvas
 </template>
 
@@ -86,7 +87,7 @@
       this.addLogo()
       const animate = () => {
         requestAnimationFrame(animate)
-        this.data.controls.update()
+        // this.data.controls.update()
         this.render()
       }
       this.query('video').play()
@@ -126,63 +127,59 @@
       // const light2 = new THREE.HemisphereLight(0x009fe9, 0x009fe9, 1.25)
       // light2.position.set( 0, 0, 0)
       // this.data.scene.add(light2)
-      this.data.controls = new THREE.OrbitControls(this.data.camera, this.data.renderer.domElement, this.data.renderer.domElement)
-      this.data.controls.minDistance = 22
-      this.data.controls.maxDistance = 100
-      this.data.controls.maxPolarAngle = Math.PI / 1.8
-      this.data.controls.minPolarAngle = -1
+      // this.data.controls = new THREE.OrbitControls(this.data.camera, this.data.renderer.domElement, this.data.renderer.domElement)
+      // this.data.controls.minDistance = 22
+      // this.data.controls.maxDistance = 100
+      // this.data.controls.maxPolarAngle = Math.PI / 1.8
+      // this.data.controls.minPolarAngle = -1
     },
     addLogo: function () {
+      const logoGroup1 = new THREE.Group
+      this.data.scene.add(logoGroup1)
+      const logoGroup2 = new THREE.Group
+      this.data.scene.add(logoGroup2)
+      
+
       // logo-1
       new THREE.TextureLoader().load("@|logo-1.png|", texture => {
         texture.minFilter = THREE.LinearFilter
         var textObj = new THREE.SpriteMaterial({
           map: texture,
           color: 16777215,
-          opacity: 1
+          opacity: 0
         })
         var logo = new THREE.Sprite(textObj);
-        logo.scale.set(2.5, 2.5, 1)
+        logoGroup1.scale.set(3.7, 3.5, 1)
 
         logo.updateMatrix()
-        logo.position.set(-25, 5, -20)
-        this.data.scene.add(logo)
-        setTimeout(() => {
-          TweenLite.to(logo.position, 2, {
-            x: -2,
-            ease: Circ.easeOut
-          })
-          TweenLite.to(logo.position, 2, {
-            y: 2,
-            z: 0,
-          })
-        }, 5100);
-        
+        logoGroup1.position.set(-2, 2, 0)
+        logoGroup1.add(logo)
+
+        TweenLite.to(textObj, 2, {
+          opacity: 1,
+          delay: 5
+        })
+        this.data.clickObjects.push(logo)
       })
       new THREE.TextureLoader().load("@|logo-2.png|", texture => {
         texture.minFilter = THREE.LinearFilter
         var textObj = new THREE.SpriteMaterial({
           map: texture,
           color: 16777215,
-          opacity: 1
+          opacity: 0
         })
         var logo = new THREE.Sprite(textObj);
-        logo.scale.set(2.5, 2.5, 1)
+        logoGroup2.scale.set(3.7, 3.5, 1)
 
         logo.updateMatrix()
-        logo.position.set(-22, 5, -20)
-        this.data.scene.add(logo)
-        setTimeout(() => {
-          TweenLite.to(logo.position, 2, {
-            x: 2,
-            ease: Circ.easeOut
-          })
-          TweenLite.to(logo.position, 2, {
-            y: 2,
-            z: 0,
-          })
-        }, 5000);
-        
+        logoGroup2.position.set(2, 2, 0)
+        logoGroup2.add(logo)
+
+        TweenLite.to(textObj, 2, {
+          opacity: 1,
+          delay: 5
+        })
+        this.data.clickObjects.push(logo)
       })
     },
     render: function () {
@@ -281,27 +278,31 @@
         
         var textObj = new THREE.SpriteMaterial({
           map: texture,
-          color: 16777215
+          color: 16777215,
+          opacity: 1
         })
-        textObj.opacity = 0
         var a = new THREE.Sprite(textObj);
         a.scale.set(14, 5.5, 1)
         // a.rotation.copy(this.data.camera.rotation)
         a.translateY(-2)
         a.updateMatrix()
-        a.position.z = 0
+        a.position.y = 10
         this.data.scene.add(a);
-        TweenLite.to(textObj, 2, {
-          delay: 0,
-          opacity: 1
+        Elastic.easeInOut.config(0, 0)
+        TweenLite.to(a.position, 2.5, {
+          y: 0,
+          opacity: 1,
+          ease: Elastic.easeInOut
         })
         // 4秒后让文字消失
-        setTimeout(() => {
-          TweenLite.to(textObj, 1, {
-            delay: 0,
-            opacity: 0
-          })
-        }, 4000);
+        TweenLite.to(textObj, 1, {
+          delay: 4,
+          opacity: 0
+        })
+        TweenLite.to('.left-logo', 1, {
+          delay: 5,
+          opacity: 1
+        })
       })
       new THREE.TextureLoader().load("@|light.png|", spoture => {
         spoture.minFilter = THREE.LinearFilter
@@ -502,5 +503,12 @@
 .ani-float {
   transform-origin: 100% 50%;
   animation: float 6s infinite 0s linear;
+}
+.left-logo {
+  position: absolute;
+  width: 280px;
+  left: 8%;
+  top: 6%;
+  opacity: 0;
 }
 </style>
