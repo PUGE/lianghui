@@ -2,7 +2,7 @@
 .home
   //- 底部logo
   img.logo(src="@|logo.png|")
-  img.left-logo(src="@|text.png|")
+  //- img.left-logo(src="@|text.png|")
   //- img.silk.ani-float(src="@|silk.png|")
   video(id="video-index" muted="true" loop="true" src="@|bg.mp4|" poster="@|bg.jpg|" style="width: 100%;")
   #WebGLCanvas
@@ -31,10 +31,10 @@
       mockData: {
         "wishes": [{
           "name": "对外开放",
-          distance: -2
+          distance: -3
         }, {
           "name": "精准扶贫",
-          distance: 0.1
+          distance: 0.05
         }, {
           "name": "营商环境",
           distance: -3
@@ -149,15 +149,15 @@
           opacity: 0
         })
         var logo = new THREE.Sprite(textObj);
-        logoGroup1.scale.set(3.7, 3.5, 1)
+        logoGroup1.scale.set(4.7, 4.5, 1)
 
         logo.updateMatrix()
-        logoGroup1.position.set(-2, 2, 0)
+        logoGroup1.position.set(-2.8, 1, 0)
         logoGroup1.add(logo)
 
         TweenLite.to(textObj, 2, {
           opacity: 1,
-          delay: 5
+          delay: 4.5
         })
         this.data.clickObjects.push(logo)
       })
@@ -169,15 +169,15 @@
           opacity: 0
         })
         var logo = new THREE.Sprite(textObj);
-        logoGroup2.scale.set(3.7, 3.5, 1)
+        logoGroup2.scale.set(4.7, 4.5, 1)
 
         logo.updateMatrix()
-        logoGroup2.position.set(2, 2, 0)
+        logoGroup2.position.set(2.8, 1, 0)
         logoGroup2.add(logo)
 
         TweenLite.to(textObj, 2, {
           opacity: 1,
-          delay: 5
+          delay: 4.5
         })
         this.data.clickObjects.push(logo)
       })
@@ -235,7 +235,7 @@
       c = new THREE.Line(i, l);
       c.computeLineDistances()
       c.position.y = -1
-      c.rotation.x = Math.PI / 2
+      c.rotation.x = Math.PI / 2.2
       return c
     },
     addLine: function () {
@@ -272,6 +272,8 @@
       })
     },
     addText: function() {
+      const textGroup = new THREE.Group
+      this.data.scene.add(textGroup)
       // 文字
       new THREE.TextureLoader().load("@|text.png|", texture => {
         texture.minFilter = THREE.LinearFilter
@@ -279,20 +281,21 @@
         var textObj = new THREE.SpriteMaterial({
           map: texture,
           color: 16777215,
-          opacity: 1
+          opacity: 0
         })
         var a = new THREE.Sprite(textObj);
-        a.scale.set(14, 5.5, 1)
-        // a.rotation.copy(this.data.camera.rotation)
-        a.translateY(-2)
+        a.scale.set(12, 2.6, 1)
         a.updateMatrix()
-        a.position.y = 10
-        this.data.scene.add(a);
-        Elastic.easeInOut.config(0, 0)
-        TweenLite.to(a.position, 2.5, {
-          y: 0,
-          opacity: 1,
-          ease: Elastic.easeInOut
+        a.position.y = 4
+        textGroup.add(a);
+        TweenLite.to(a.position, 0.5, {
+          y: -0.2,
+          delay: 1,
+          ease: Elastic.easeOut.config(1, 0.9)
+        })
+        TweenLite.to(textObj, 1, {
+          delay: 0.9,
+          opacity: 1
         })
         // 4秒后让文字消失
         TweenLite.to(textObj, 1, {
@@ -302,6 +305,37 @@
         TweenLite.to('.left-logo', 1, {
           delay: 5,
           opacity: 1
+        })
+      })
+      // 文字的阴影
+      new THREE.TextureLoader().load("@|text-sh.png|", texture => {
+        texture.minFilter = THREE.LinearFilter
+        
+        var textObj = new THREE.SpriteMaterial({
+          map: texture,
+          color: 16777215,
+          opacity: 0
+        })
+        var a = new THREE.Sprite(textObj);
+        a.scale.set(12, 2.6, 1)
+        // a.rotation.copy(this.data.camera.rotation)
+        a.translateY(-2)
+        a.updateMatrix()
+        a.position.y = -4
+        textGroup.add(a);
+        TweenLite.to(a.position, 0.5, {
+          y: -2.5,
+          delay: 1,
+          ease: Elastic.easeOut.config(1, 0.9)
+        })
+        TweenLite.to(textObj, 0.3, {
+          delay: 1,
+          opacity: 1
+        })
+        // 4秒后让文字消失
+        TweenLite.to(textObj, 1, {
+          delay: 4,
+          opacity: 0
         })
       })
       new THREE.TextureLoader().load("@|light.png|", spoture => {
@@ -463,10 +497,14 @@
 }
 .logo {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 3%;
+  left: 11%;
+  /* right: 0; */
+  top: 5%;
+  width: 200px;
   margin: auto;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
   pointer-events: none;
   z-index: 9;
