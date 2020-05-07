@@ -2,7 +2,8 @@
 .home
   //- 底部logo
   img.logo(src="@|logo.png|")
-  img.silk.ani-float(src="@|silk.png|")
+  //- img.silk.ani-float(src="@|silk.png|")
+  video(id="video-index" muted="true" loop="true" src="@|bg.mp4|" poster="@|bg.jpg|" style="width: auto;")
   #WebGLCanvas
 </template>
 
@@ -24,35 +25,51 @@
       isDrag: false,
       targetRotation: 0,
       stopTimer: true,
+      // 允许点击的元素
+      clickObjects: [],
       mockData: {
         "wishes": [{
-          "name": "对外开放"
+          "name": "对外开放",
+          distance: -2
         }, {
-          "name": "精准扶贫"
+          "name": "精准扶贫",
+          distance: 0.1
         }, {
-          "name": "营商环境"
+          "name": "营商环境",
+          distance: -3
         }, {
-          "name": "社会保障"
+          "name": "社会保障",
+          distance: 1
         }, {
-          "name": "居民收入"
+          "name": "居民收入",
+          distance: 22
         }, {
-          "name": "就业创业"
+          "name": "就业创业",
+          distance: -3
         }, {
-          "name": "生态环保"
+          "name": "生态环保",
+          distance: -2
         }, {
-          "name": "农业农村"
+          "name": "农业农村",
+          distance: -1
         }, {
-          "name": "对外开放"
+          "name": "对外开放",
+          distance: 1
         }, {
-          "name": "经济金融"
+          "name": "经济金融",
+          distance: 1
         }, {
-          "name": "健康中国"
+          "name": "健康中国",
+          distance: 1
         }, {
-          "name": "群众办事"
+          "name": "群众办事",
+          distance: 45
         }, {
-          "name": "依法治国"
+          "name": "依法治国",
+          distance: -5
         }, {
-          "name": "乡村振兴"
+          "name": "乡村振兴",
+          distance: -0.5
         }]
       }
     },
@@ -70,7 +87,9 @@
         this.data.controls.update()
         this.render()
       }
+      this.query('video').play()
       animate()
+      this.initThreeClickEvent()
     },
     init: function () {
       this.data.width = window.innerWidth
@@ -98,25 +117,18 @@
       this.data.scene.add(this.data.group3)
       this.data.raycaster = new THREE.Raycaster
       // 添加灯光
-      this.data.light = new THREE.PointLight(16777215, 1.5)
-      this.data.light.position.set(100, 100, 200)
-      this.data.scene.add(this.data.light);
+      // this.data.light = new THREE.PointLight(0x009fe9, 101.5)
+      // this.data.light.position.set(1, 1, 1)
+      // this.data.scene.add(this.data.light);
       // 添加灯光2
-      const light2 = new THREE.HemisphereLight(2865844, 2865844, 1.25)
-      light2.color.setHex(15239532)
-      light2.groundColor.setHSL(.1, .8, .4)
-      light2.position.set( - 1, 1.75, 1)
-      this.data.scene.add(light2)
-      // document.addEventListener("mousemove", onDocumentMouseMove2, false),
-      // WebGLCanvas.addEventListener("mousedown", onDocumentMouseDown, false),
-      // WebGLCanvas.addEventListener("touchstart", onDocumentTouchStart, false),
-      // WebGLCanvas.addEventListener("touchmove", onDocumentTouchMove, false),
-      // window.addEventListener("resize", onWindowResize, false),
+      // const light2 = new THREE.HemisphereLight(0x009fe9, 0x009fe9, 1.25)
+      // light2.position.set( 0, 0, 0)
+      // this.data.scene.add(light2)
       this.data.controls = new THREE.OrbitControls(this.data.camera, this.data.renderer.domElement, this.data.renderer.domElement)
       this.data.controls.minDistance = 22
       this.data.controls.maxDistance = 100
       this.data.controls.maxPolarAngle = Math.PI / 1.8
-      this.data.controls.minPolarAngle = 1
+      this.data.controls.minPolarAngle = -1
     },
     render: function () {
       if (this.data.isDrag) {
@@ -229,11 +241,30 @@
           opacity: 1
         })
       })
+      new THREE.TextureLoader().load("@|light.png|", spoture => {
+        spoture.minFilter = THREE.LinearFilter
+        
+        var spotObj = new THREE.SpriteMaterial({
+          map: spoture,
+          color: 16777215,
+          opacity: 0
+        })
+        var spot = new THREE.Sprite(spotObj);
+        spot.scale.set(2, 2, 1)
+        spot.updateMatrix()
+        spot.position.set(-5, 0, 0)
+        this.data.scene.add(spot);
+        new TweenMax(spotObj, 2, {
+          opacity: 1,
+          repeat: -1,
+          yoyo: true
+        })
+      })
     },
     addMessage: function () {
       let ind = 0
       this.data.mockData.wishes.forEach(element => {
-        this.addWishes(ind++, element.name)
+        this.addWishes(ind++, element.name, element.distance)
       })
     },
     makeTextSprite: function (text, config = {}, r, i) {
@@ -262,7 +293,7 @@
       E.scale.set(5, 5, 5);
       return E
     },
-    addWishes: function (ind, text) {
+    addWishes: function (ind, text, distance) {
       var n = 2.5 * ind * .175 + Math.PI
       // 小图标
       const texture = new THREE.TextureLoader().load("@|blove.png|")
@@ -278,6 +309,7 @@
       // part.position.x = 0,
       // part.position.y = 0,
       // part.position.z = 0;
+      this.data.clickObjects.push(part)
       part.name = ind
       this.data.group2.add(part)
       // 信息
@@ -285,8 +317,7 @@
       // u.position.y = -2
       part.add(textTemp)
       TweenLite.to(part.material, .6, {
-        delay: .9 + .1 * ind,
-        opacity: 1
+        delay: .9 + .1 * ind
       })
       TweenLite.to(part.children[0].material, .6, {
         delay: .9 + .1 * ind,
@@ -295,11 +326,56 @@
       TweenLite.to(part.position, .6, {
         x: 7.5 * Math.sin(n),
         y: -(ind / 12) + 2 * Math.random(),
-        z: 8.5 * Math.cos(n),
+        z: (8.5 + distance) * Math.cos(n),
         ease: Back.easeOut,
-        delay: .9 + .1 * ind,
-        opacity: 1
+        delay: .9 + .1 * ind
       })
+      // 心的图标一闪一闪的
+      setTimeout(() => {
+        new TweenMax(part.material, 2, {
+          opacity: 1,
+          repeat: -1,
+          yoyo: true
+        })
+      }, Math.random() * 4000);
+    },
+    // threejs点击事件
+    initThreeClickEvent: function () {
+      const renderer = this.data.renderer
+      const camera = this.data.camera
+      const _this = this
+      //点击射线
+      var raycaster = new THREE.Raycaster();
+      var mouse = new THREE.Vector2();
+
+      document.getElementById("WebGLCanvas").addEventListener('mousedown', onDocumentMouseDown, false);
+      function onDocumentMouseDown(event) {
+        event.preventDefault();
+        mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+        mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+
+        //总结一下，这里必须装网格，mesh，装入组是没有效果的
+        //所以我们将所有的盒子的网格放入对象就可以了
+        // 需要被监听的对象要存储在clickObjects中。
+        var intersects = raycaster.intersectObjects(_this.data.clickObjects);
+
+        // console.log(intersects)
+        if (intersects.length > 0) {
+          // 在这里填写点击代码
+          // console.log("dianji");
+          console.log(intersects[0].object)
+          // 点击后心来个放大效果
+          new TweenMax(intersects[0].object.scale, 0.3, {
+            x: 0.6,
+            y: 0.6,
+            repeat: 1,
+            yoyo: true
+          })
+          // showDetailPage(intersects[0].object.name);
+        }
+      }
     }
   }
 </script>
@@ -307,7 +383,7 @@
 
 <style lang="less">
 .home {
-  background-image: url('@|bg.jpg|');
+  // background-image: url('@|bg.jpg|');
   background-size: cover;
   background-position: center;
   overflow: hidden;
