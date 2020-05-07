@@ -82,6 +82,8 @@
       this.addLine()
       // 添加圆球
       this.addMessage()
+      // 增加两会logo
+      this.addLogo()
       const animate = () => {
         requestAnimationFrame(animate)
         this.data.controls.update()
@@ -129,6 +131,59 @@
       this.data.controls.maxDistance = 100
       this.data.controls.maxPolarAngle = Math.PI / 1.8
       this.data.controls.minPolarAngle = -1
+    },
+    addLogo: function () {
+      // logo-1
+      new THREE.TextureLoader().load("@|logo-1.png|", texture => {
+        texture.minFilter = THREE.LinearFilter
+        var textObj = new THREE.SpriteMaterial({
+          map: texture,
+          color: 16777215,
+          opacity: 1
+        })
+        var logo = new THREE.Sprite(textObj);
+        logo.scale.set(2.5, 2.5, 1)
+
+        logo.updateMatrix()
+        logo.position.set(-25, 5, -20)
+        this.data.scene.add(logo)
+        setTimeout(() => {
+          TweenLite.to(logo.position, 2, {
+            x: -2,
+            ease: Circ.easeOut
+          })
+          TweenLite.to(logo.position, 2, {
+            y: 2,
+            z: 0,
+          })
+        }, 5100);
+        
+      })
+      new THREE.TextureLoader().load("@|logo-2.png|", texture => {
+        texture.minFilter = THREE.LinearFilter
+        var textObj = new THREE.SpriteMaterial({
+          map: texture,
+          color: 16777215,
+          opacity: 1
+        })
+        var logo = new THREE.Sprite(textObj);
+        logo.scale.set(2.5, 2.5, 1)
+
+        logo.updateMatrix()
+        logo.position.set(-22, 5, -20)
+        this.data.scene.add(logo)
+        setTimeout(() => {
+          TweenLite.to(logo.position, 2, {
+            x: 2,
+            ease: Circ.easeOut
+          })
+          TweenLite.to(logo.position, 2, {
+            y: 2,
+            z: 0,
+          })
+        }, 5000);
+        
+      })
     },
     render: function () {
       if (this.data.isDrag) {
@@ -230,7 +285,7 @@
         })
         textObj.opacity = 0
         var a = new THREE.Sprite(textObj);
-        a.scale.set(14, 6, 1)
+        a.scale.set(14, 5.5, 1)
         // a.rotation.copy(this.data.camera.rotation)
         a.translateY(-2)
         a.updateMatrix()
@@ -240,25 +295,42 @@
           delay: 0,
           opacity: 1
         })
+        // 4秒后让文字消失
+        setTimeout(() => {
+          TweenLite.to(textObj, 1, {
+            delay: 0,
+            opacity: 0
+          })
+        }, 4000);
       })
       new THREE.TextureLoader().load("@|light.png|", spoture => {
         spoture.minFilter = THREE.LinearFilter
-        
-        var spotObj = new THREE.SpriteMaterial({
-          map: spoture,
-          color: 16777215,
-          opacity: 0
-        })
-        var spot = new THREE.Sprite(spotObj);
-        spot.scale.set(2, 2, 1)
-        spot.updateMatrix()
-        spot.position.set(-5, 0, 0)
-        this.data.scene.add(spot);
-        new TweenMax(spotObj, 2, {
-          opacity: 1,
-          repeat: -1,
-          yoyo: true
-        })
+        this.addSpot(spoture, -5, 0, 0)
+        this.addSpot(spoture, 5, -1, 0)
+        this.addSpot(spoture, -3, -2, 2)
+        this.addSpot(spoture, -2, 1.4, 1)
+      })
+    },
+    addSpot: function (spoture, x, y, z) {
+      var spotObj = new THREE.SpriteMaterial({
+        map: spoture,
+        color: 16777215,
+        opacity: 0
+      })
+      var spot = new THREE.Sprite(spotObj);
+      spot.scale.set(2, 2, 1)
+      spot.position.set(x, 0, z)
+      spot.updateMatrix()
+      this.data.group3.add(spot)
+      new TweenMax(spotObj, 2, {
+        opacity: 1,
+        repeat: -1,
+        yoyo: true
+      })
+      // 光球冲地面上升起
+      TweenLite.to(spot.position, 10, {
+        y: y,
+        opacity: 1
       })
     },
     addMessage: function () {

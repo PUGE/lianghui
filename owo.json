@@ -90,29 +90,8 @@
 			"defer": false
 		},
 		{
-			"name": "ColladaLoader",
-			"src": "./src/resource/ColladaLoader.js",
-			"resource": false,
-			"babel": false,
-			"defer": false
-		},
-		{
-			"name": "Detector",
-			"src": "./src/resource/Detector.js",
-			"resource": false,
-			"babel": false,
-			"defer": false
-		},
-		{
 			"name": "OrbitControls",
 			"src": "./src/resource/OrbitControls.js",
-			"resource": false,
-			"babel": false,
-			"defer": false
-		},
-		{
-			"name": "stats",
-			"src": "./src/resource/stats.js",
 			"resource": false,
 			"babel": false,
 			"defer": false
@@ -129,10 +108,6 @@
 		{
 			"name": "main",
 			"src": "./src/main.css"
-		},
-		{
-			"name": "swiper.2.0",
-			"src": "http://tools.people.com.cn/libs/swiper/2.0/idangerous.swiper.css"
 		}
 	],
 	"pageList": [
