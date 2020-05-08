@@ -566,4 +566,7 @@
   bottom: 0;
   margin: auto;
 }
+.home {
+  background-image: url('@|bg.jpg|');
+}
 </style>
