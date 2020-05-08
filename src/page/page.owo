@@ -31,45 +31,45 @@
       mockData: {
         "wishes": [{
           "name": "对外开放 122222",
-          distance: -3
+          distance: 0
         }, {
-          "name": "精准扶贫",
+          "name": "精准扶贫 122222",
           distance: 0.05
         }, {
           "name": "营商环境",
-          distance: -3
+          distance: -0.5
         }, {
-          "name": "社会保障",
+          "name": "社会保障 122222",
           distance: 1
         }, {
-          "name": "居民收入",
+          "name": "居民收入 3453322",
           distance: 22
         }, {
-          "name": "就业创业",
-          distance: -3
-        }, {
-          "name": "生态环保",
+          "name": "就业创业 34234",
           distance: -2
         }, {
-          "name": "农业农村",
+          "name": "生态环保 54322",
+          distance: 0
+        }, {
+          "name": "农业农村 4455543",
           distance: -1
         }, {
-          "name": "对外开放",
+          "name": "对外开放 323664",
+          distance: 0
+        }, {
+          "name": "经济金融 4676453",
+          distance: -1
+        }, {
+          "name": "健康中国 2334445",
           distance: 1
         }, {
-          "name": "经济金融",
-          distance: 1
+          "name": "群众办事 2464325",
+          distance: 20
         }, {
-          "name": "健康中国",
-          distance: 1
+          "name": "依法治国 453342",
+          distance: 2
         }, {
-          "name": "群众办事",
-          distance: 45
-        }, {
-          "name": "依法治国",
-          distance: -5
-        }, {
-          "name": "乡村振兴",
+          "name": "乡村振兴 4434",
           distance: -0.5
         }]
       }
@@ -125,22 +125,23 @@
       this.data.group3 = new THREE.Group
       this.data.scene.add(this.data.group)
       this.data.scene.add(this.data.group2)
-      this.data.scene.add(this.data.group3)
+      // this.data.scene.add(this.data.group3)
       this.data.raycaster = new THREE.Raycaster
-      // 添加灯光
-      // this.data.light = new THREE.PointLight(0x009fe9, 101.5)
-      // this.data.light.position.set(1, 1, 1)
-      // this.data.scene.add(this.data.light);
-      // 添加灯光2
-      // const light2 = new THREE.HemisphereLight(0x009fe9, 0x009fe9, 1.25)
-      // light2.position.set( 0, 0, 0)
-      // this.data.scene.add(light2)
-      // this.data.controls = new THREE.OrbitControls(this.data.camera, this.data.renderer.domElement, this.data.renderer.domElement)
-      // this.data.controls.minDistance = 22
-      // this.data.controls.maxDistance = 100
-      // this.data.controls.maxPolarAngle = Math.PI / 1.8
-      // this.data.controls.minPolarAngle = -1
       this.data.camera.lookAt(this.data.scene.position)
+      
+      // 鼠标按住旋转事件
+      this.data.isDrag = false
+      this.data.WebGLCanvas.addEventListener("mousedown", () => {
+        this.data.isDrag = true
+      }, false)
+      this.data.WebGLCanvas.addEventListener("mouseup", () => {
+        this.data.isDrag = false
+      }, false)
+      this.data.WebGLCanvas.addEventListener("mousemove", (e) => {
+        if (!this.data.isDrag) return
+        // console.log(e.movementX)
+        this.data.group2.rotation.y += e.movementX * 0.01
+      }, false)
     },
     addLogo: function () {
       const logoGroup1 = new THREE.Group
@@ -194,8 +195,22 @@
     render: function () {
       this.data.ecart = -1 / 800
       this.data.isIntro || (this.data.group.rotation.y += this.data.ecart)
-      this.data.group2.rotation.y += .7 * this.data.ecart
-      this.data.group3.rotation.y += .9 * this.data.ecart
+      if (!this.data.isDrag) {
+        this.data.group2.rotation.y += .9 * this.data.ecart
+      }
+      
+      // this.data.group2.rotation.y = 180 / 180 * Math.PI
+      // this.data.group3.rotation.y += .9 * this.data.ecart
+      const ro = (this.data.group2.rotation.y * 180 / Math.PI) % 360
+      for (let index = 0; index < this.data.group2.children.length; index++) {
+        const element = this.data.group2.children[index];
+        const temp = index * (360 / 14) + ro
+        if (temp < 80 && temp > -100) {
+          element.visible = false
+        } else {
+          element.visible = true
+        }
+      }
       // this.data.camera.lookAt(this.data.scene.position);
       this.data.renderer.render(this.data.scene, this.data.camera);
     },
@@ -270,17 +285,18 @@
           opacity: 0
         })
         var a = new THREE.Sprite(textObj);
-        a.scale.set(12, 2.6, 1)
+        a.scale.set(14.5, 5.8, 1)
         a.updateMatrix()
+        a.position.x = 0.1
         a.position.y = 4
         textGroup.add(a);
         TweenLite.to(a.position, 0.5, {
-          y: -0.2,
-          delay: 1,
+          y: 0.1,
+          delay: 1.2,
           ease: Elastic.easeOut.config(1, 0.9)
         })
         TweenLite.to(textObj, 1, {
-          delay: 0.9,
+          delay: 1,
           opacity: 1
         })
         // 4秒后让文字消失
@@ -311,7 +327,7 @@
         textGroup.add(a);
         TweenLite.to(a.position, 0.5, {
           y: -2.5,
-          delay: 1,
+          delay: 1.2,
           ease: Elastic.easeOut.config(1, 0.9)
         })
         TweenLite.to(textObj, 0.3, {
@@ -362,11 +378,11 @@
     },
     makeTextSprite: function (text, config = {}, r, i) {
       var n = config.hasOwnProperty("fontface") ? config.fontface: "Raleway",
-      a = config.hasOwnProperty("fontsize") ? config.fontsize: 40,
+      a = config.hasOwnProperty("fontsize") ? config.fontsize: 50,
       o = config.hasOwnProperty("borderThickness") ? config.borderThickness: 4,
       canvasTemp = document.createElement("canvas");
-      canvasTemp.width = 480,
-      canvasTemp.height = 480;
+      canvasTemp.width = 980,
+      canvasTemp.height = 980;
       var u = canvasTemp.getContext("2d");
       u.font = a + "px " + n,
       u.textBaseline = "top";
@@ -374,7 +390,7 @@
       u.lineWidth = o
       u.fillStyle = "#fcd681"
       // 文字 x y
-      u.fillText(text, 310, 225);
+      u.fillText(text, 550, 470);
       var d = new THREE.Texture(canvasTemp);
       d.minFilter = THREE.LinearFilter
       d.needsUpdate = true;
@@ -383,7 +399,7 @@
         opacity: 0
       }),
       E = new THREE.Sprite(f)
-      E.scale.set(5, 5, 5);
+      E.scale.set(12, 12, 1);
       return E
     },
     addWishes: function (ind, text, distance) {
@@ -398,7 +414,7 @@
         transparent: true
       }))
       // console.log(part)
-      part.scale.set(0.5, 0.5, 0.5);
+      part.scale.set(0.3, 0.3, 1);
       // part.position.x = 0,
       // part.position.y = 0,
       // part.position.z = 0;
@@ -409,28 +425,25 @@
       var textTemp = this.makeTextSprite(text, {}, "", 0);
       // u.position.y = -2
       part.add(textTemp)
-      TweenLite.to(part.material, .6, {
-        delay: .9 + .1 * ind
-      })
       TweenLite.to(part.children[0].material, .6, {
         delay: .9 + .1 * ind,
         opacity: 1
       })
       TweenLite.to(part.position, .6, {
         x: 7.5 * Math.sin(n),
-        y: -(ind / 12) + 2 * Math.random(),
+        y: -(ind / 20) + 1,
         z: (8.5 + distance) * Math.cos(n),
         ease: Back.easeOut,
         delay: .9 + .1 * ind
       })
       // 心的图标一闪一闪的
       setTimeout(() => {
-        new TweenMax(part.material, 1, {
+        new TweenMax(part.material, 0.5, {
           opacity: 1,
           repeat: -1,
           yoyo: true
         })
-      }, Math.random() * 4000);
+      }, 2000 + Math.random() * 500);
     },
     // threejs点击事件
     initThreeClickEvent: function () {
