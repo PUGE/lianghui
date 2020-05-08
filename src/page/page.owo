@@ -75,6 +75,14 @@
       }
     },
     created: function () {
+      // 获取窗口比例
+      if ((window.innerWidth / window.innerHeight) > (1920 / 1080)) {
+        this.query('.bg-video').style.width = '100%'
+        this.query('.bg-video').style.height = 'auto'
+      } else {
+        this.query('.bg-video').style.width = 'auto'
+        this.query('.bg-video').style.height = '100%'
+      }
       // 创建3D场景
       this.init()
       // 添加主标题文字
@@ -132,6 +140,7 @@
       // this.data.controls.maxDistance = 100
       // this.data.controls.maxPolarAngle = Math.PI / 1.8
       // this.data.controls.minPolarAngle = -1
+      this.data.camera.lookAt(this.data.scene.position)
     },
     addLogo: function () {
       const logoGroup1 = new THREE.Group
@@ -183,35 +192,12 @@
       })
     },
     render: function () {
-      if (this.data.isDrag) {
-        this.data.ecart = .1 * (this.data.targetRotation - this.data.group.rotation.y)
-        this.data.stopTimer = false
-        setTimeout(() => {
-          this.data.stopTimer = true
-        }, 3000)
-        this.data.isIntro = false
-      } else {
-        if (this.data.stopTimer) {
-          this.data.ecart = -1 / 800
-        } else {
-          this.data.ecart = .1 * (this.data.targetRotation - this.data.group.rotation.y)
-        }
-      }
+      this.data.ecart = -1 / 800
       this.data.isIntro || (this.data.group.rotation.y += this.data.ecart)
       this.data.group2.rotation.y += .7 * this.data.ecart
       this.data.group3.rotation.y += .9 * this.data.ecart
-      this.data.camera.lookAt(this.data.scene.position);
-      // var e = new THREE.Vector3(mouse.x, mouse.y, 1).unproject(camera);
-      // raycaster.set(camera.position, e.sub(camera.position).normalize());
-      // // console.log(objects)
-      // // return
-      // // var t = raycaster.intersectObjects(objects);
-      // // t.length > 0 ? INTERSECTED != t[0].object && (INTERSECTED = t[0].object, WebGLCanvas.classList.add("cursoron")) : (WebGLCanvas.classList.remove("cursoron"), INTERSECTED = null)
+      // this.data.camera.lookAt(this.data.scene.position);
       this.data.renderer.render(this.data.scene, this.data.camera);
-      // var r = 5e-4 * Date.now();
-      // light.position.x = 3e3 * Math.sin(4 * r),
-      // light.position.y = 1e3,
-      // light.position.z = 3e3 * Math.cos(4 * r)
     },
     addCircle: function(e) {
       // 分段个数
@@ -439,7 +425,7 @@
       })
       // 心的图标一闪一闪的
       setTimeout(() => {
-        new TweenMax(part.material, 2, {
+        new TweenMax(part.material, 1, {
           opacity: 1,
           repeat: -1,
           yoyo: true
