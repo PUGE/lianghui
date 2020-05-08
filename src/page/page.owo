@@ -128,7 +128,7 @@
       // this.data.scene.add(this.data.group3)
       this.data.raycaster = new THREE.Raycaster
       this.data.camera.lookAt(this.data.scene.position)
-      
+
       // 鼠标按住旋转事件
       this.data.isDrag = false
       this.data.WebGLCanvas.addEventListener("mousedown", () => {
@@ -339,6 +339,10 @@
           delay: 4,
           opacity: 0
         })
+        // 6秒后消除场景
+        setTimeout(() => {
+          this.data.scene.remove(textGroup)
+        }, 6000);
       })
       new THREE.TextureLoader().load("@|light.png|", spoture => {
         spoture.minFilter = THREE.LinearFilter
@@ -410,9 +414,14 @@
       let part = new THREE.Sprite(new THREE.SpriteMaterial({
         map: texture,
         color: 16777215,
-        opacity: 0,
-        transparent: true
+        opacity: 0.2,
+        transparent: true,
+        visible: false
       }))
+      // 两秒后显示心
+      setTimeout(() => {
+        part.material.visible = true
+      }, 2000);
       // console.log(part)
       part.scale.set(0.3, 0.3, 1);
       // part.position.x = 0,
