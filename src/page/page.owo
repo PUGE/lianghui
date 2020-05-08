@@ -30,46 +30,60 @@
       clickObjects: [],
       mockData: {
         "wishes": [{
-          "name": "对外开放 122222",
+          "name": "对外开放",
+          number: 13123,
           distance: 0
         }, {
-          "name": "精准扶贫 122222",
+          "name": "精准扶贫",
+          number: 13123,
           distance: 0.05
         }, {
           "name": "营商环境",
-          distance: -0.5
+          number: 13123,
+          distance: -5.5
         }, {
-          "name": "社会保障 122222",
-          distance: 1
+          "name": "社会保障",
+          number: 13123,
+          distance: 5
         }, {
-          "name": "居民收入 3453322",
-          distance: 22
+          "name": "居民收入",
+          number: 13123,
+          distance: 18
         }, {
-          "name": "就业创业 34234",
+          "name": "就业创业",
+          number: 13123,
           distance: -2
         }, {
-          "name": "生态环保 54322",
+          "name": "生态环保",
+          number: 13123,
           distance: 0
         }, {
-          "name": "农业农村 4455543",
-          distance: -1
+          "name": "农业农村",
+          number: 432322,
+          distance: 0.2
         }, {
-          "name": "对外开放 323664",
+          "name": "对外开放",
+          number: 232133,
           distance: 0
         }, {
-          "name": "经济金融 4676453",
+          "name": "经济金融",
+          number: 23213,
           distance: -1
         }, {
-          "name": "健康中国 2334445",
-          distance: 1
-        }, {
-          "name": "群众办事 2464325",
-          distance: 20
-        }, {
-          "name": "依法治国 453342",
+          "name": "健康中国",
+          number: 343234,
           distance: 2
         }, {
-          "name": "乡村振兴 4434",
+          "name": "群众办事",
+          number: 231234,
+          distance: 20
+        }, {
+          "name": "依法治国",
+          number: 12357,
+          distance: 2.4
+        }, {
+          "name": "乡村振兴",
+          number: 542344,
           distance: -0.5
         }]
       }
@@ -131,14 +145,19 @@
 
       // 鼠标按住旋转事件
       this.data.isDrag = false
+      let isPress = false
       this.data.WebGLCanvas.addEventListener("mousedown", () => {
+        isPress = true
         this.data.isDrag = true
       }, false)
       this.data.WebGLCanvas.addEventListener("mouseup", () => {
-        this.data.isDrag = false
+        isPress = false
+        setTimeout(() => {
+          this.data.isDrag = false
+        }, 600);
       }, false)
       this.data.WebGLCanvas.addEventListener("mousemove", (e) => {
-        if (!this.data.isDrag) return
+        if (!this.data.isDrag || !isPress) return
         // console.log(e.movementX)
         this.data.group2.rotation.y += e.movementX * 0.01
       }, false)
@@ -155,7 +174,6 @@
         texture.minFilter = THREE.LinearFilter
         var textObj = new THREE.SpriteMaterial({
           map: texture,
-          color: 16777215,
           opacity: 0
         })
         var logo = new THREE.Sprite(textObj);
@@ -175,7 +193,6 @@
         texture.minFilter = THREE.LinearFilter
         var textObj = new THREE.SpriteMaterial({
           map: texture,
-          color: 16777215,
           opacity: 0
         })
         var logo = new THREE.Sprite(textObj);
@@ -228,20 +245,20 @@
       // i.computeLineDistances();
       // 设置线的属性
       var l = new THREE.LineBasicMaterial({
-        color: 16777215,
         linewidth: 1,
         opacity: .15,
         transparent: true
       }),
       c = new THREE.Line(i, l);
       c.computeLineDistances()
+      c.position.z = -3
       c.position.y = -1
-      c.rotation.x = Math.PI / 2.2
+      c.rotation.x = Math.PI / 2.0
       return c
     },
     addLine: function () {
       // 圆圈
-      var o = this.addCircle(8.2);
+      var o = this.addCircle(9.2);
       this.data.scene.add(o)
       TweenLite.to(o.scale, .7, {
         x: 1,
@@ -250,7 +267,7 @@
         ease: Back.easeOut,
         delay: .8
       });
-      var s = this.addCircle(9.6);
+      var s = this.addCircle(10.1);
       this.data.scene.add(s)
 
       // 圆圈
@@ -281,7 +298,6 @@
         
         var textObj = new THREE.SpriteMaterial({
           map: texture,
-          color: 16777215,
           opacity: 0
         })
         var a = new THREE.Sprite(textObj);
@@ -315,7 +331,6 @@
         
         var textObj = new THREE.SpriteMaterial({
           map: texture,
-          color: 16777215,
           opacity: 0
         })
         var a = new THREE.Sprite(textObj);
@@ -355,7 +370,6 @@
     addSpot: function (spoture, x, y, z) {
       var spotObj = new THREE.SpriteMaterial({
         map: spoture,
-        color: 16777215,
         opacity: 0
       })
       var spot = new THREE.Sprite(spotObj);
@@ -377,43 +391,46 @@
     addMessage: function () {
       let ind = 0
       this.data.mockData.wishes.forEach(element => {
-        this.addWishes(ind++, element.name, element.distance)
+        this.addWishes(ind++, element.name, element.distance, element.number)
       })
     },
-    makeTextSprite: function (text, config = {}, r, i) {
-      var n = config.hasOwnProperty("fontface") ? config.fontface: "Raleway",
-      a = config.hasOwnProperty("fontsize") ? config.fontsize: 50,
-      o = config.hasOwnProperty("borderThickness") ? config.borderThickness: 4,
-      canvasTemp = document.createElement("canvas");
-      canvasTemp.width = 980,
-      canvasTemp.height = 980;
+    creatText: function (text, config) {
+      var n = config.hasOwnProperty("fontface") ? config.fontface: "Raleway"
+      var a = config.hasOwnProperty("fontsize") ? config.fontsize: 50
+      var o = config.hasOwnProperty("borderThickness") ? config.borderThickness: 4
+      var canvasTemp = document.createElement("canvas");
+
+      canvasTemp.width = 980
+      canvasTemp.height = 180
       var u = canvasTemp.getContext("2d");
-      u.font = a + "px " + n,
+      u.font = a + "px " + n
       u.textBaseline = "top";
       u.strokeStyle = "#fcd681"
       u.lineWidth = o
       u.fillStyle = "#fcd681"
       // 文字 x y
-      u.fillText(text, 550, 470);
-      var d = new THREE.Texture(canvasTemp);
+      u.fillText(text, 550, 70)
+      var d = new THREE.Texture(canvasTemp)
       d.minFilter = THREE.LinearFilter
       d.needsUpdate = true;
+      return d
+    },
+    makeTextSprite: function (text, config = {}) {
       var f = new THREE.SpriteMaterial({
-        map: d,
+        map: this.creatText(text, config),
         opacity: 0
-      }),
-      E = new THREE.Sprite(f)
-      E.scale.set(12, 12, 1);
+      })
+      let E = new THREE.Sprite(f)
+      E.scale.set(12, 2.5, 1);
       return E
     },
-    addWishes: function (ind, text, distance) {
+    addWishes: function (ind, text, distance, number) {
       var n = 2.5 * ind * .175 + Math.PI
       // 小图标
       const texture = new THREE.TextureLoader().load("@|blove.png|")
       texture.minFilter = THREE.LinearFilter
       let part = new THREE.Sprite(new THREE.SpriteMaterial({
         map: texture,
-        color: 16777215,
         opacity: 0.2,
         transparent: true,
         visible: false
@@ -427,11 +444,12 @@
       // part.position.x = 0,
       // part.position.y = 0,
       // part.position.z = 0;
-      this.data.clickObjects.push(part)
       part.name = ind
       this.data.group2.add(part)
       // 信息
-      var textTemp = this.makeTextSprite(text, {}, "", 0);
+      var textTemp = this.makeTextSprite(text + ' ' + number, {});
+      textTemp.name = ind
+      this.data.clickObjects.push(textTemp)
       // u.position.y = -2
       part.add(textTemp)
       TweenLite.to(part.children[0].material, .6, {
@@ -440,7 +458,7 @@
       })
       TweenLite.to(part.position, .6, {
         x: 7.5 * Math.sin(n),
-        y: -(ind / 20) + 1,
+        y: -(ind / 20) + 0.5,
         z: (8.5 + distance) * Math.cos(n),
         ease: Back.easeOut,
         delay: .9 + .1 * ind
@@ -480,14 +498,16 @@
         if (intersects.length > 0) {
           // 在这里填写点击代码
           // console.log("dianji");
-          console.log(intersects[0].object)
+          
+          const wishes = _this.data.mockData.wishes[intersects[0].object.name]
+          intersects[0].object.material.map = _this.creatText(wishes.name + ' ' + (++wishes.number), {})
           // 点击后心来个放大效果
-          new TweenMax(intersects[0].object.scale, 0.3, {
-            x: 0.6,
-            y: 0.6,
-            repeat: 1,
-            yoyo: true
-          })
+          // new TweenMax(intersects[0].object.scale, 0.3, {
+          //   x: 0.6,
+          //   y: 0.6,
+          //   repeat: 1,
+          //   yoyo: true
+          // })
           // showDetailPage(intersects[0].object.name);
         }
       }

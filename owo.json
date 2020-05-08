@@ -78,20 +78,8 @@
 			"src": "http://tools.people.com.cn/libs/jquery/1.11.1/jquery-1.11.1.min.js"
 		},
 		{
-			"name": "main",
-			"src": "./src/main.js",
-			"resource": true
-		},
-		{
 			"name": "three.min",
 			"src": "./src/resource/three.min.js",
-			"resource": false,
-			"babel": false,
-			"defer": false
-		},
-		{
-			"name": "OrbitControls",
-			"src": "./src/resource/OrbitControls.js",
 			"resource": false,
 			"babel": false,
 			"defer": false
