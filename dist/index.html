@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <!-- 页面的元信息 -->
+  <title>{TAG_14226_TAG}</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+  <meta name="format-detection" content="telephone=no, email=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="white" />
+  <meta name="renderer" content="webkit" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="filetype" content="1" />
+  <meta name="publishedtype" content="1" />
+  <meta name="pagetype" content="2" />
+  <meta name="screen-orientation" content="landscape" />
+  <meta name="x5-orientation" content="landscape" />
+  <meta name="full-screen" content="yes" />
+  <meta name="x5-fullscreen" content="true" />
+  <meta name="browsermode" content="application" />
+  <meta name="x5-page-mode" content="app" />
+
+  <!-- 页面主样式文件 -->
+  <link charset="utf-8" rel="stylesheet" href="./static/css/owo.core.url76qd39hc.css">
+
+  <!-- 附属css文件 -->
+  <link rel="stylesheet" href="./static/css/main.css" charset="utf-8">
+
+</head>
+
+<body>
+
+  <!-- 页面[page]-->
+  <div class="home page" style="display: none;">
+    <img class="logo" src="./static/resource/logo.png">
+    <video class="bg-video" id="video-index" muted="true" loop="true" src="./static/resource/bg.mp4" poster="./static/resource/bg.jpg" style="width: 100%;"></video>
+    <div id="WebGLCanvas"></div>
+    <!-- 低版本IE显示 -->
+    <div class="ie-box" style="display: none;">
+      <img class="ie-text" src="./static/resource/text.png">
+      <img class="ie-text-sh" src="./static/resource/text-sh.png">
+    </div>
+  </div>
+
+
+  <script src="http://tools.people.com.cn/libs/jquery/1.11.1/jquery-1.11.1.min.js" type="text/javascript" charset="UTF-8"></script>
+  <script src="./static/js/three.min.js" type="text/javascript" charset="UTF-8"></script>
+  <script src="./static/js/TweenMax.min.js" type="text/javascript" charset="UTF-8"></script>
+  <script type="text/javascript" charset="UTF-8">
+    var homePage = {
+      "data": {
+        "mouse": null,
+        "scene": null,
+        "renderer": null,
+        "WebGLCanvas": null,
+        "width": null,
+        "height": null,
+        "camera": null,
+        "camerapos": {},
+        "raycaster": null,
+        "light": null,
+        "controls": null,
+        "ecart": 0,
+        "isDrag": false,
+        "targetRotation": 0,
+        "stopTimer": true,
+        "clickObjects": [],
+        "mockData": [
+          {
+            "name": "对外开放",
+            "number": 13123,
+            "distance": -2.4,
+            "y": 0,
+            "z": -7.2,
+            "show": [75, 310]
+          }, {
+            "name": "精准扶贫",
+            "number": 13123,
+            "distance": -7.5,
+            "y": -0.1,
+            "z": -5,
+            "show": [110, 357]
+          }, {
+            "name": "营商环境",
+            "number": 13123,
+            "distance": -6,
+            "y": 0,
+            "z": -3,
+            "show": [109, 355]
+          }, {
+            "name": "社会保障",
+            "number": 13123,
+            "distance": -7.2,
+            "y": 0,
+            "z": 0,
+            "show": [136, 20]
+          }, {
+            "name": "居民收入",
+            "number": 13123,
+            "distance": -6,
+            "y": 0.1,
+            "z": 4,
+            "show": [188, 49]
+          }, {
+            "name": "就业创业",
+            "number": 13123,
+            "distance": -2.5,
+            "y": 0.3,
+            "z": 7,
+            "show": [198, 89]
+          }, {
+            "name": "生态环保",
+            "number": 13123,
+            "distance": -0.5,
+            "y": 0.1,
+            "z": 8.4,
+            "show": [218, 116]
+          }, {
+            "name": "农业农村",
+            "number": 432322,
+            "distance": 6.5,
+            "y": 0.2,
+            "z": 1.4,
+            "show": [311, 187]
+          }, {
+            "name": "对外开放",
+            "number": 232133,
+            "distance": 1.4,
+            "y": 0,
+            "z": 7,
+            "show": [238, 126]
+          }, {
+            "name": "经济金融",
+            "number": 23213,
+            "distance": 5,
+            "y": 0,
+            "z": 4.3,
+            "show": [280, 157]
+          }, {
+            "name": "健康中国",
+            "number": 343234,
+            "distance": 7.8,
+            "y": 0.2,
+            "z": 4,
+            "show": [289, 182]
+          }, {
+            "name": "群众办事",
+            "number": 231234,
+            "distance": 7,
+            "y": 0.1,
+            "z": -1,
+            "show": [325, 207]
+          }, {
+            "name": "依法治国",
+            "number": 12357,
+            "distance": 3.8,
+            "y": 0,
+            "z": -8,
+            "show": [17, 281]
+          }, {
+            "name": "乡村振兴",
+            "number": 542344,
+            "distance": 5.8,
+            "y": 0,
+            "z": -4,
+            "show": [353, 234]
+          }
+        ]
+      },
+      "created": function created() {
+        var _this2 = this;
+        this.reInitVideo()
+        // 创建3D场景
+
+        // 判断是否为IE11版本以上
+        var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串  
+        var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1; //判断是否IE<11浏览器  
+        var isIE11 = userAgent.indexOf('Trident') > -1 && userAgent.indexOf("rv:11.0") > -1;
+        
+        var browser = {
+          versions: function () {
+            var u = navigator.userAgent;
+            return {
+              trident: u.indexOf('Trident') > -1, //IE内核
+            };
+          }()
+        }
+
+        if (browser.versions.trident && !isIE11) {
+          console.log('低版本IE')
+          this.query('#WebGLCanvas').style.display = 'none'
+          this.query('.ie-box').style.display = 'block'
+        } else {
+          this.init(); // 添加主标题文字
+
+          this.addText(); // 添加环绕的线
+
+          this.addLine(); // 添加圆球
+
+          this.addMessage(); // 增加两会logo
+
+          this.addLogo();
+          var animate = function animate() {
+            requestAnimationFrame(animate); // this.data.controls.update()
+
+            _this2.render();
+          };
+          animate();
+          this.initThreeClickEvent();
+        }
+
+        // 播放背景视频
+        var videoPlay = this.query('.bg-video')
+        if (videoPlay && videoPlay.play) {
+          videoPlay.play();
+        } else {
+          videoPlay.style.display = 'none'
+        }
+        setTimeout(function () {
+          $('.home.page')[0].style.display = 'block'
+        }, 0);
+        // 浏览器窗口变动触发的方法
+        var timer = null
+        function onWindowResize() {
+          window.clearTimeout(timer)
+          
+          timer = setTimeout(function() {
+            _this2.reInitVideo()
+            _this2.reInitCamera()
+          }, 300)
+        }
+        // 添加window 的resize事件监听
+        
+        window.addEventListener('resize',onWindowResize);
+      },
+      "init": function init() {
+        var _this3 = this;
+
+        this.data.width = window.innerWidth;
+        this.data.height = window.innerHeight;
+        this.data.WebGLCanvas = document.getElementById("WebGLCanvas");
+        this.data.mouse = new THREE.Vector2();
+        this.data.scene = new THREE.Scene();
+        this.data.renderer = new THREE.WebGLRenderer({
+          antialias: true,
+          alpha: true,
+          precision: "highp"
+        });
+        this.data.renderer.setSize(this.data.width, this.data.height);
+        this.data.renderer.sortObjects = true;
+        this.data.WebGLCanvas.appendChild(this.data.renderer.domElement);
+        this.data.camera = new THREE.PerspectiveCamera(400, this.data.width / this.data.height, 1, 2000);
+        this.data.camerapos.positionZ = this.data.camera.position.z = 20;
+        this.data.camerapos.positionY = this.data.camera.position.y = 6;
+        this.data.camerapos.positionX = 0;
+        this.data.group = new THREE.Group();
+        this.data.group2 = new THREE.Group();
+        this.data.group3 = new THREE.Group();
+        this.data.scene.add(this.data.group);
+        this.data.scene.add(this.data.group2); // this.data.scene.add(this.data.group3)
+
+        this.data.raycaster = new THREE.Raycaster();
+        this.data.camera.lookAt(this.data.scene.position); // 鼠标按住旋转事件
+
+        this.data.isDrag = false;
+        var isPress = false;
+        this.data.WebGLCanvas.addEventListener("mousedown", function() {
+          isPress = true;
+          _this3.data.isDrag = true;
+        }, false);
+        this.data.WebGLCanvas.addEventListener("mouseup", function() {
+          isPress = false;
+          setTimeout(function() {
+            _this3.data.isDrag = false;
+          }, 600);
+        }, false);
+        this.data.WebGLCanvas.addEventListener("mousemove", function(e) {
+          if (!_this3.data.isDrag || !isPress) return; 
+          var moveX = e.movementX
+          if (moveX) _this3.data.group2.rotation.y += moveX * 0.01;
+        }, false);
+      },
+      "addLogo": function addLogo() {
+        var _this4 = this;
+
+        var logoGroup1 = new THREE.Group();
+        this.data.scene.add(logoGroup1);
+        var logoGroup2 = new THREE.Group();
+        this.data.scene.add(logoGroup2); // logo-1
+
+        new THREE.TextureLoader().load("./static/resource/logo-1.png", function(texture) {
+          texture.minFilter = THREE.LinearFilter;
+          var textObj = new THREE.SpriteMaterial({
+            map: texture,
+            opacity: 0
+          });
+          var logo = new THREE.Sprite(textObj);
+          logoGroup1.scale.set(4.7, 4.5, 1);
+          logo.name = 'logo1'
+          logo.updateMatrix();
+          logoGroup1.position.set(-2.8, 1, 0);
+          logoGroup1.add(logo);
+          TweenLite.to(textObj, 2, {
+            opacity: 1,
+            delay: 4.5
+          });
+
+          _this4.data.clickObjects.push(logo);
+        });
+        new THREE.TextureLoader().load("./static/resource/logo-2.png", function(texture) {
+          texture.minFilter = THREE.LinearFilter;
+          var textObj = new THREE.SpriteMaterial({
+            map: texture,
+            opacity: 0
+          });
+          var logo = new THREE.Sprite(textObj);
+          logo.name = 'logo2'
+          logoGroup2.scale.set(4.7, 4.5, 1);
+          logo.updateMatrix();
+          logoGroup2.position.set(2.8, 1, 0);
+          logoGroup2.add(logo);
+          TweenLite.to(textObj, 2, {
+            opacity: 1,
+            delay: 4.5
+          });
+
+          _this4.data.clickObjects.push(logo);
+        });
+      },
+      "render": function render() {
+        var _this = this
+        this.data.ecart = -1 / 800;
+        this.data.isIntro || (this.data.group.rotation.y += this.data.ecart);
+
+        if (!this.data.isDrag) {
+          this.data.group2.rotation.y += 1.4 * this.data.ecart;
+        } // this.data.group2.rotation.y = 180 / 180 * Math.PI
+        // this.data.group3.rotation.y += .9 * this.data.ecart
+
+
+        var ro = -this.data.group2.rotation.y * 180 / Math.PI % 360;
+        // console.log(ro)
+        for (var index = 0; index < this.data.group2.children.length; index++) {
+          
+          var element = this.data.group2.children[index];
+          var config = this.data.mockData[index];
+          if (config.show[1] < config.show[0]) {
+            if ((ro > config.show[0] || ro < config.show[1])) {
+              if (element.hiddIt) {
+                element.hiddIt = false
+                element.visible = true
+                TweenLite.to(element.children[0].material, 1, {
+                  opacity: 1
+                })
+                // element.children[0].material.visible = true
+              }
+            } else {
+              if (!element.hiddIt) {
+                element.hiddIt = true
+                element.visible = false
+              }
+            }
+          } else {
+            if ((ro > config.show[0] && ro < config.show[1])) {
+              if (element.hiddIt) {
+                element.hiddIt = false
+                element.visible = true
+                TweenLite.to(element.children[0].material, 1, {
+                  opacity: 1
+                })
+              }
+            } else {
+              if (!element.hiddIt) {
+                element.hiddIt = true
+                element.visible = false
+              }
+            }
+          }
+          
+        }
+        // this.data.camera.lookAt(this.data.scene.position);
+
+        this.data.renderer.render(this.data.scene, this.data.camera);
+      },
+      "addCircle": function addCircle(e) {
+        // 分段个数
+        var segment = e * 10;
+        var r = e,
+          i = new THREE.Geometry(),
+          n = i.vertices,
+          a = 2 * Math.PI / segment;
+
+        for (var o = 0; segment > o; o++) {
+          var s = r * Math.cos(a * o);
+          var h = r * Math.sin(a * o);
+          n.push(new THREE.Vector3(s, h, 0));
+        } // 闭合线段
+
+
+        n.push(new THREE.Vector3(r * Math.cos(0), r * Math.sin(0), 0));
+        // 设置线的属性
+
+        var l = new THREE.LineBasicMaterial({
+            linewidth: 1,
+            opacity: .15,
+            transparent: true
+          }),
+          c = new THREE.Line(i, l);
+        c.computeLineDistances();
+        c.position.z = -3;
+        c.position.y = -1;
+        c.rotation.x = Math.PI / 2.0;
+        return c;
+      },
+      "addLine": function addLine() {
+        // 圆圈
+        var o = this.addCircle(9.2);
+        this.data.scene.add(o);
+        TweenLite.to(o.scale, .7, {
+          x: 1,
+          y: 1,
+          z: 1,
+          ease: Back.easeOut,
+          delay: .8
+        });
+        var s = this.addCircle(10.1);
+        this.data.scene.add(s); // 圆圈
+
+        TweenLite.to(s.scale, .7, {
+          x: 1,
+          y: 1,
+          z: 1,
+          ease: Back.easeOut,
+          delay: .7
+        });
+        var l = this.addCircle(7);
+        this.data.scene.add(l);
+        TweenLite.to(l.scale, .7, {
+          x: 1,
+          y: 1,
+          z: 1,
+          ease: Back.easeOut,
+          delay: .9
+        });
+      },
+      "addText": function addText() {
+        var _this5 = this;
+
+        var textGroup = new THREE.Group();
+        this.data.scene.add(textGroup); // 文字
+
+        new THREE.TextureLoader().load("./static/resource/text.png", function(texture) {
+          texture.minFilter = THREE.LinearFilter;
+          var textObj = new THREE.SpriteMaterial({
+            map: texture,
+            opacity: 0
+          });
+          var a = new THREE.Sprite(textObj);
+          a.scale.set(14.5, 5.8, 1);
+          a.updateMatrix();
+          a.position.x = 0.1;
+          a.position.y = 12;
+          textGroup.add(a);
+          TweenLite.to(a.position, 0.8, {
+            y: 0.5,
+            delay: 1.2,
+            ease: Elastic.easeOut.config(1.1, 1.1)
+          });
+          TweenLite.to(textObj, 0.8, {
+            delay: 1,
+            opacity: 1
+          }); // 4秒后让文字消失
+
+          TweenLite.to(textObj, 1, {
+            delay: 4,
+            opacity: 0
+          });
+          TweenLite.to('.left-logo', 1, {
+            delay: 5,
+            opacity: 1
+          });
+        }); // 文字的阴影
+
+        new THREE.TextureLoader().load("./static/resource/text-sh.png", function(texture) {
+          texture.minFilter = THREE.LinearFilter;
+          var textObj = new THREE.SpriteMaterial({
+            map: texture,
+            opacity: 0
+          });
+          var a = new THREE.Sprite(textObj);
+          a.scale.set(12, 2.6, 1); // a.rotation.copy(this.data.camera.rotation)
+
+          a.translateY(-2);
+          a.updateMatrix();
+          a.position.y = -6;
+          textGroup.add(a);
+          TweenLite.to(a.position, 0.8, {
+            y: -2.5,
+            delay: 1.2,
+            ease: Elastic.easeOut.config(1, 0.9)
+          });
+          TweenLite.to(textObj, 0.3, {
+            delay: 1.3,
+            opacity: 1
+          });
+          // 4秒后让文字消失
+
+          TweenLite.to(textObj, 1, {
+            delay: 4,
+            opacity: 0
+          }); // 6秒后消除场景
+
+          setTimeout(function() {
+            _this5.data.scene.remove(textGroup);
+          }, 6000);
+        });
+        new THREE.TextureLoader().load("./static/resource/light.png", function(spoture) {
+          spoture.minFilter = THREE.LinearFilter;
+
+          _this5.addSpot(spoture, -5, 0, 0);
+
+          _this5.addSpot(spoture, 5, -1, 0);
+
+          _this5.addSpot(spoture, -3, -2, 2);
+
+          _this5.addSpot(spoture, -2, 1.4, 1);
+        });
+      },
+      "addSpot": function addSpot(spoture, x, y, z) {
+        var spotObj = new THREE.SpriteMaterial({
+          map: spoture,
+          opacity: 0
+        });
+        var spot = new THREE.Sprite(spotObj);
+        spot.scale.set(2, 2, 1);
+        spot.position.set(x, 0, z);
+        spot.updateMatrix();
+        this.data.group3.add(spot);
+        new TweenMax(spotObj, 2, {
+          opacity: 1,
+          repeat: -1,
+          yoyo: true
+        }); // 光球冲地面上升起
+
+        TweenLite.to(spot.position, 10, {
+          y: y,
+          opacity: 1
+        });
+      },
+      "addMessage": function addMessage() {
+        var _this6 = this;
+
+        var ind = 0;
+        this.data.mockData.forEach(function(element) {
+          _this6.addWishes(ind++, element);
+        });
+      },
+      "creatText": function creatText(info, config) {
+        var n = config.hasOwnProperty("fontface") ? config.fontface : "Raleway";
+        var a = config.hasOwnProperty("fontsize") ? config.fontsize : 70;
+        var o = config.hasOwnProperty("borderThickness") ? config.borderThickness : 4;
+        var canvasTemp = document.createElement("canvas");
+        canvasTemp.width = 1400;
+        canvasTemp.height = 180;
+        var u = canvasTemp.getContext("2d");
+        u.font = a + "px " + n;
+        u.textBaseline = "top";
+        u.strokeStyle = "#fcd681";
+        u.lineWidth = o;
+        u.fillStyle = "#fcd681"; // 文字 x y
+
+        u.fillText(info.name, 780, 69);
+        u.font = 50 + "px " + n;
+        u.fillText(info.number + ' 赞', 1080, 80);
+        var d = new THREE.Texture(canvasTemp);
+        d.minFilter = THREE.LinearFilter;
+        d.needsUpdate = true;
+        return d;
+      },
+      "makeTextSprite": function makeTextSprite(info, config) {
+        if (config === void 0) {
+          config = {};
+        }
+
+        var f = new THREE.SpriteMaterial({
+          map: this.creatText(info, config),
+          opacity: 0
+        });
+        var E = new THREE.Sprite(f);
+        E.scale.set(15, 2, 1);
+        return E;
+      },
+      "addWishes": function addWishes(ind, info) {
+        var n = 2.5 * ind * .175 + Math.PI; // 小图标
+
+        var texture = new THREE.TextureLoader().load("./static/resource/blove.png");
+        texture.minFilter = THREE.LinearFilter;
+        var part = new THREE.Sprite(new THREE.SpriteMaterial({
+          map: texture,
+          opacity: 0.2,
+          transparent: true,
+          visible: false
+        })); // 两秒后显示心
+
+        setTimeout(function() {
+          part.material.visible = true;
+        }, 2000); // console.log(part)
+
+        part.scale.set(0.3, 0.3, 1); // part.position.x = 0,
+        // part.position.y = 0,
+        // part.position.z = 0;
+
+        part.name = ind;
+        this.data.group2.add(part); // 信息
+
+        var textTemp = this.makeTextSprite(info, {});
+        textTemp.name = ind;
+        this.data.clickObjects.push(textTemp); // u.position.y = -2
+
+        part.add(textTemp);
+        TweenLite.to(part.children[0].material, .6, {
+          delay: .9 + .1 * ind,
+          opacity: 1
+        });
+        TweenLite.to(part.position, .6, {
+          x: info.distance,
+          y: info.y,
+          z: info.z,
+          ease: Back.easeOut,
+          delay: .9 + .1 * ind
+        });
+        // 心的图标一闪一闪的
+        setTimeout(function() {
+          new TweenMax(part.material, 0.5, {
+            opacity: 1,
+            repeat: -1,
+            yoyo: true
+          });
+        }, 2000 + Math.random() * 500);
+      },
+      "initThreeClickEvent": function initThreeClickEvent() {
+        var renderer = this.data.renderer;
+        var camera = this.data.camera;
+
+        var _this = this; //点击射线
+
+
+        var raycaster = new THREE.Raycaster();
+        var mouse = new THREE.Vector2();
+        document.getElementById("WebGLCanvas").addEventListener('mousedown', onDocumentMouseDown, false);
+
+        function onDocumentMouseDown(event) {
+          event.preventDefault();
+          mouse.x = event.clientX / renderer.domElement.clientWidth * 2 - 1;
+          mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+          raycaster.setFromCamera(mouse, camera); //总结一下，这里必须装网格，mesh，装入组是没有效果的
+          //所以我们将所有的盒子的网格放入对象就可以了
+          // 需要被监听的对象要存储在clickObjects中。
+
+          var intersects = raycaster.intersectObjects(_this.data.clickObjects); // console.log(intersects)
+
+          if (intersects.length > 0) {
+            // 在这里填写点击代码
+            // console.log("dianji");
+            // 判断是否是点击了logo
+            var name = intersects[0].object.name
+            if (name == 'logo1' || name == 'logo2') {
+              window.location.href = "http://demos.run/zhuanti/index.html"
+              return
+            }
+            var wishes = _this.data.mockData[intersects[0].object.name];
+            wishes.number++
+            intersects[0].object.material.map = _this.creatText(wishes, {});
+            // 点击后心来个放大效果
+            // console.log(intersects[0].object.material)
+            // new TweenMax(intersects[0].object.scale, 0.3, {
+            //   repeat: 1,
+            //   yoyo: true,
+            //   x: 13,
+            //   y: 1.8
+            // });
+          }
+        }
+      },
+      "query": function (str) {
+        return document.querySelector('.page ' + str)
+      },
+      "reInitVideo": function () {
+        // 获取窗口比例
+        if (window.innerWidth / window.innerHeight > 1920 / 1080) {
+          this.query('.bg-video').style.width = '100%';
+          this.query('.bg-video').style.height = 'auto';
+        } else {
+          this.query('.bg-video').style.width = 'auto';
+          this.query('.bg-video').style.height = '100%';
+        }
+      },
+      "reInitCamera": function () {
+        var _this = this
+        // 重新设置相机宽高比例
+        _this.data.camera.aspect = window.innerWidth / window.innerHeight;
+        // 更新相机投影矩阵
+        _this.data.camera.updateProjectionMatrix();
+        // 重新设置渲染器渲染范围
+        _this.data.renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+    }
+    $(document).ready(function() {
+      homePage.created()
+    })
+  </script>
+
+</body>
+
+</html>
