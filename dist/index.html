@@ -272,13 +272,15 @@
         this.data.WebGLCanvas.addEventListener("mouseup", function() {
           isPress = false;
           setTimeout(function() {
+            isPress = false;
             _this3.data.isDrag = false;
           }, 600);
         }, false);
         this.data.WebGLCanvas.addEventListener("mousemove", function(e) {
           if (!_this3.data.isDrag || !isPress) return; 
           var moveX = e.movementX
-          if (moveX) _this3.data.group2.rotation.y += moveX * 0.01;
+          if (moveX < -2) moveX = -2
+          if (moveX && moveX < 0) _this3.data.group2.rotation.y += moveX * 0.01;
         }, false);
       },
       "addLogo": function addLogo() {
@@ -335,10 +337,9 @@
 
         if (!this.data.isDrag) {
           this.data.group2.rotation.y += 1.4 * this.data.ecart;
-        } // this.data.group2.rotation.y = 180 / 180 * Math.PI
+        }
+        // this.data.group2.rotation.y = 180 / 180 * Math.PI
         // this.data.group3.rotation.y += .9 * this.data.ecart
-
-
         var ro = -this.data.group2.rotation.y * 180 / Math.PI % 360;
         // console.log(ro)
         for (var index = 0; index < this.data.group2.children.length; index++) {
