@@ -145,5 +145,7 @@ li {
 
 .home {
   background-image: url('../resource/bg.jpg');
+  background-repeat: no-repeat;
+  background-position: cover;
 }
 

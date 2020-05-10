@@ -69,26 +69,62 @@ h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, pre, form, bu
 
 .ie-box {
   position: absolute;
-  width: 1000px;
+  width: 1300px;
   height: 600px;
   left: 0;
   top: 0;
   right: 0;
   bottom: 0;
   margin: auto;
+  background-image: url('../resource/ie-line.png');
+  background-repeat: no-repeat;
+  background-size: 1200px;
+  background-position: center 152px;
 }
 
 .ie-box .ie-text {
-  width: 100%;
+  width: 846px;
   position: absolute;
   top: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 
 .ie-box .ie-text-sh {
-  width: 800px;
+  width: 676px;
   position: absolute;
-  left: -30px;
+  left: -16px;
   right: 0;
-  top: 300px;
+  top: 251px;
   margin: auto;
+}
+
+.ie-show li {
+  color: #fcd681;
+  background-image: url('../resource/blove.png');
+  width: 200px;
+  height: 34px;
+  background-repeat: no-repeat;
+  line-height: 34px;
+  padding-left: 43px;
+  font-size: 20px;
+  position: absolute;
+  user-select: none;
+  cursor: pointer;
+}
+
+.ie-logo {
+  position: absolute;
+  top: -10px;
+  display: none;
+  width: 310px;
+}
+
+.ie-logo-1 {
+  left: 315px;
+}
+
+.ie-logo-2 {
+  right: 315px;
 }

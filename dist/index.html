@@ -40,6 +40,9 @@
     <div class="ie-box" style="display: none;">
       <img class="ie-text" src="./static/resource/text.png">
       <img class="ie-text-sh" src="./static/resource/text-sh.png">
+      <img class="ie-logo ie-logo-1" src="./static/resource/logo-1.png">
+      <img class="ie-logo ie-logo-2" src="./static/resource/logo-2.png">
+      <ul class="ie-show"></ul>
     </div>
   </div>
 
@@ -48,6 +51,58 @@
   <script src="./static/js/three.min.js" type="text/javascript" charset="UTF-8"></script>
   <script src="./static/js/TweenMax.min.js" type="text/javascript" charset="UTF-8"></script>
   <script type="text/javascript" charset="UTF-8">
+    // 低版本浏览器的点赞
+    function ieChangeNumber (index, target) {
+      var item = homePage.data.mockData[index]
+      homePage.data.mockData[index].number++
+      target.innerHTML = item.name + ' ' + item.number + '赞'
+    }
+    // 检测是否支持webGL
+    var Detector = {
+      canvas: !!window.CanvasRenderingContext2D,
+      webgl: (function() {
+          try {
+              var canvas = document.createElement('canvas');
+              return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+          } catch(e) {
+              return false;
+          }
+      })(),
+      workers: !!window.Worker,
+      fileapi: window.File && window.FileReader && window.FileList && window.Blob,
+      getWebGLErrorMessage: function() {
+          var element = document.createElement('div');
+          element.id = 'webgl-error-message';
+          element.style.fontFamily = 'monospace';
+          element.style.fontSize = '13px';
+          element.style.fontWeight = 'normal';
+          element.style.textAlign = 'center';
+          element.style.background = '#fff';
+          element.style.color = '#000';
+          element.style.padding = '1.5em';
+          element.style.width = '400px';
+          element.style.margin = '5em auto 0';
+          if(!this.webgl) {
+              element.innerHTML = window.WebGLRenderingContext ? [
+                  'Your graphics card does not seem to support <a href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" rel="external nofollow" rel="external nofollow" style="color:#000">WebGL</a>.<br />',
+                  'Find out how to get it <a href="http://get.webgl.org/" rel="external nofollow" rel="external nofollow" style="color:#000">here</a>.'
+              ].join('\n') : [
+                  'Your browser does not seem to support <a href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" rel="external nofollow" rel="external nofollow" style="color:#000">WebGL</a>.<br/>',
+                  'Find out how to get it <a href="http://get.webgl.org/" rel="external nofollow" rel="external nofollow" style="color:#000">here</a>.'
+              ].join('\n');
+          }
+          return element;
+      },
+      addGetWebGLMessage: function(parameters) {
+          var parent, id, element;
+          parameters = parameters || {};
+          parent = parameters.parent !== undefined ? parameters.parent : document.body;
+          id = parameters.id !== undefined ? parameters.id : 'oldie';
+          element = Detector.getWebGLErrorMessage();
+          element.id = id;
+          parent.appendChild(element);
+      }
+  };
     var homePage = {
       "data": {
         "mouse": null,
@@ -73,98 +128,112 @@
             "distance": -2.4,
             "y": 0,
             "z": -7.2,
-            "show": [75, 310]
+            "show": [75, 310],
+            "coordinate": [87, 160]
           }, {
             "name": "精准扶贫",
             "number": 13123,
             "distance": -7.5,
             "y": -0.1,
             "z": -5,
-            "show": [110, 357]
+            "show": [110, 357],
+            "coordinate": [19, 258]
           }, {
             "name": "营商环境",
             "number": 13123,
             "distance": -6,
             "y": 0,
             "z": -3,
-            "show": [109, 355]
+            "show": [109, 355],
+            "coordinate": [176, 320]
           }, {
             "name": "社会保障",
             "number": 13123,
             "distance": -7.2,
             "y": 0,
             "z": 0,
-            "show": [136, 20]
+            "show": [136, 20],
+            "coordinate": [245, 410]
           }, {
             "name": "居民收入",
             "number": 13123,
             "distance": -6,
             "y": 0.1,
             "z": 4,
-            "show": [188, 49]
+            "show": [188, 49],
+            "coordinate": [414, 365]
           }, {
             "name": "就业创业",
             "number": 13123,
             "distance": -2.5,
             "y": 0.3,
             "z": 7,
-            "show": [198, 89]
+            "show": [198, 89],
+            "coordinate": [570, 438]
           }, {
             "name": "生态环保",
             "number": 13123,
             "distance": -0.5,
             "y": 0.1,
             "z": 8.4,
-            "show": [218, 116]
+            "show": [218, 116],
+            "coordinate": [711, 340]
           }, {
             "name": "农业农村",
             "number": 432322,
             "distance": 6.5,
             "y": 0.2,
             "z": 1.4,
-            "show": [311, 187]
+            "show": [311, 187],
+            "coordinate": [810, 390]
           }, {
             "name": "对外开放",
             "number": 232133,
             "distance": 1.4,
             "y": 0,
             "z": 7,
-            "show": [238, 126]
+            "show": [238, 126],
+            "coordinate": [970, 286]
           }, {
             "name": "经济金融",
             "number": 23213,
             "distance": 5,
             "y": 0,
             "z": 4.3,
-            "show": [280, 157]
+            "show": [280, 157],
+            "coordinate": [970, 434]
           }, {
             "name": "健康中国",
             "number": 343234,
             "distance": 7.8,
             "y": 0.2,
             "z": 4,
-            "show": [289, 182]
+            "show": [289, 182],
+            "coordinate": [1109, 351]
           }, {
             "name": "群众办事",
             "number": 231234,
             "distance": 7,
             "y": 0.1,
             "z": -1,
-            "show": [325, 207]
+            "show": [325, 207],
+            "coordinate": [1016, 180]
           }, {
             "name": "依法治国",
             "number": 12357,
             "distance": 3.8,
             "y": 0,
             "z": -8,
-            "show": [17, 281]
+            "show": [17, 281],
+            "coordinate": [1094, 231]
           }, {
             "name": "乡村振兴",
             "number": 542344,
             "distance": 5.8,
             "y": 0,
             "z": -4,
-            "show": [353, 234]
+            "show": [353, 234],
+            "coordinate": [1212, 285]
           }
         ]
       },
@@ -187,10 +256,25 @@
           }()
         }
 
-        if (browser.versions.trident && !isIE11) {
-          console.log('低版本IE')
+        if ((browser.versions.trident && !isIE11) || !Detector.webgl) {
+          console.log('低版本浏览器')
           this.query('#WebGLCanvas').style.display = 'none'
           this.query('.ie-box').style.display = 'block'
+          var showHtml = ''
+          for (var index = 0; index < this.data.mockData.length; index++) {
+            var element = this.data.mockData[index];
+            showHtml += '<li style="left: ' + element.coordinate[0] + 'px; top: ' + element.coordinate[1] + 'px" onclick="ieChangeNumber(' + index + ', this)">' + element.name + ' ' + element.number + '赞</li>'
+          }
+          // 生成文字
+          this.query('.ie-box .ie-show').innerHTML = showHtml
+          // 三秒后显示徽章
+          setTimeout(function() {
+            console.log($('.ie-text'))
+            $('.ie-text').hide()
+            $('.ie-text-sh').hide()
+            $('.ie-logo-1').show()
+            $('.ie-logo-2').show()
+          }, 3000);
         } else {
           this.init(); // 添加主标题文字
 
@@ -215,7 +299,7 @@
         if (videoPlay && videoPlay.play) {
           videoPlay.play();
         } else {
-          videoPlay.style.display = 'none'
+          $('.bg-video').hide()
         }
         setTimeout(function () {
           $('.home.page')[0].style.display = 'block'
@@ -232,7 +316,7 @@
         }
         // 添加window 的resize事件监听
         
-        window.addEventListener('resize',onWindowResize);
+        if (window.addEventListener) window.addEventListener('resize',onWindowResize);
       },
       "init": function init() {
         var _this3 = this;
@@ -403,11 +487,11 @@
         // 设置线的属性
 
         var l = new THREE.LineBasicMaterial({
-            linewidth: 1,
-            opacity: .15,
-            transparent: true
-          }),
-          c = new THREE.Line(i, l);
+          linewidth: 1,
+          opacity: .15,
+          transparent: true
+        }),
+        c = new THREE.Line(i, l);
         c.computeLineDistances();
         c.position.z = -3;
         c.position.y = -1;
