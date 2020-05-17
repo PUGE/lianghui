@@ -11,6 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="white" />
   <meta name="renderer" content="webkit" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="人民网2020全国两会大型融媒体专题">
   <meta name="filetype" content="1" />
   <meta name="publishedtype" content="1" />
   <meta name="pagetype" content="2" />
@@ -43,6 +44,10 @@
       <img class="ie-logo ie-logo-1" src="./static/resource/logo-1.png">
       <img class="ie-logo ie-logo-2" src="./static/resource/logo-2.png">
       <ul class="ie-show"></ul>
+      <!-- 手机会显示 -->
+      <div class="phone-show">
+
+      </div>
     </div>
   </div>
 
@@ -102,7 +107,63 @@
           element.id = id;
           parent.appendChild(element);
       }
-  };
+    };
+    // 投票方法
+    function vote (voteId) {
+      $.ajax({
+        type: "get",
+        voteId: voteId,
+        url: "http://littlepoll1.people.com.cn/button/index.php/cip/button/660/" + voteId,//每一个投票对应一个type的值
+        dataType: "json",
+        data: "jsonCallback=?",
+        cache: false,
+        success: function (data) {
+          // console.log(data)
+          if (data.b == 1) {
+            var num = parseInt($("#vote" + voteId).text().replace('已投 ', '')) + 1
+            $("#vote" + voteId).text("已投 " + num);
+            alert("投票成功，感谢您的支持！");
+          }
+          else if (data.b == 2) { alert("一个IP一天只能投5票！"); }
+          else if (data.b == 3) { alert("您已经投过此选项！"); }
+          else if (data.b == 8) { alert("投票未开始！"); }
+          else if (data.b == 9) { alert("投票已结束！"); }
+          else if (data.b == 0) { alert("没有此投票！"); }
+        }
+      })
+    }
+    // 点赞效果
+    function showHeart (e) {
+      var x = e.touches ? e.touches[0].pageX : e.pageX;
+      var y = e.touches ? e.touches[0].pageY: e.pageY;
+      var star = document.createElement("div");
+      star.innerHTML = '<svg t="1589460298124" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4083" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24"><defs><style type="text/css"></style></defs><path d="M923.328 411.072l-263.232 0c102.016-389.184-70.272-409.088-70.272-409.088-73.024 0-57.92 59.648-63.424 69.632 0 190.336-195.648 339.456-195.648 339.456l0 539.776c0 53.248 70.272 72.448 97.856 72.448l395.52 0c37.184 0 67.52-100.8 67.52-100.8 97.856-343.744 97.856-446.08 97.856-446.08C989.504 405.376 923.328 411.072 923.328 411.072zM222.656 411.264 65.024 411.264C32.448 411.264 32 444.288 32 444.288l32.512 544.32c0 34.688 33.6 34.688 33.6 34.688l136.448 0c28.416 0 28.16-22.848 28.16-22.848L262.72 452.544C262.72 410.752 222.656 411.264 222.656 411.264z" p-id="4084" fill="#d81e06"></path></svg>';
+      var RandomSize = parseInt(Math.random() * 20 + 20);
+      star.style.height = star.style.width = RandomSize + "px";
+      star.style.color = "red";
+      star.style.pointerEvents = 'none'
+      star.style.width = RandomSize + "px";
+      star.style.position = "absolute";
+      x = x - (RandomSize / 2)
+      y = y - (RandomSize / 2)
+      star.style.left = x + "px";
+      star.style.top = y + "px";
+      document.body.appendChild(star);
+      var op = 100;
+      var deg = 0;
+      var RandomX = Math.round(Math.random() * 2 + 2);
+      var t = setInterval(function(){
+        op--;
+        deg +=5;
+        star.style.top = (star.offsetTop-=RandomX) + "px";
+        star.style.left = 20 * Math.sin(deg * Math.PI / 180) + x + "px";
+        star.style.opacity = op / 100;
+        if (star.style.opacity == 0) {
+          clearInterval(t);
+          star.remove();
+        }
+      }, 20)
+    }
     var homePage = {
       "data": {
         "mouse": null,
@@ -121,118 +182,133 @@
         "targetRotation": 0,
         "stopTimer": true,
         "clickObjects": [],
+        "objList": [],
         "mockData": [
           {
             "name": "对外开放",
             "number": 13123,
             "distance": -2.4,
+            "id": 64633,
             "y": 0,
             "z": -7.2,
-            "show": [75, 310],
+            "show": [105, 310],
             "coordinate": [87, 160]
           }, {
             "name": "精准扶贫",
             "number": 13123,
             "distance": -7.5,
+            "id": 64634,
             "y": -0.1,
             "z": -5,
-            "show": [110, 357],
-            "coordinate": [19, 258]
+            "show": [125, 347],
+            "coordinate": [19, 248]
           }, {
             "name": "营商环境",
             "number": 13123,
             "distance": -6,
+            "id": 64635,
             "y": 0,
             "z": -3,
-            "show": [109, 355],
+            "show": [139, 355],
             "coordinate": [176, 320]
           }, {
             "name": "社会保障",
             "number": 13123,
             "distance": -7.2,
+            "id": 64636,
             "y": 0,
             "z": 0,
-            "show": [136, 20],
+            "show": [166, 20],
             "coordinate": [245, 410]
           }, {
             "name": "居民收入",
             "number": 13123,
             "distance": -6,
+            "id": 64637,
             "y": 0.1,
             "z": 4,
-            "show": [188, 49],
+            "show": [218, 49],
             "coordinate": [414, 365]
           }, {
             "name": "就业创业",
             "number": 13123,
             "distance": -2.5,
+            "id": 64638,
             "y": 0.3,
             "z": 7,
-            "show": [198, 89],
+            "show": [228, 89],
             "coordinate": [570, 438]
           }, {
             "name": "生态环保",
             "number": 13123,
             "distance": -0.5,
+            "id": 64639,
             "y": 0.1,
             "z": 8.4,
-            "show": [218, 116],
+            "show": [248, 106],
             "coordinate": [711, 340]
           }, {
             "name": "农业农村",
             "number": 432322,
             "distance": 6.5,
+            "id": 64640,
             "y": 0.2,
             "z": 1.4,
-            "show": [311, 187],
-            "coordinate": [810, 390]
+            "show": [341, 187],
+            "coordinate": [810, 380]
           }, {
             "name": "对外开放",
             "number": 232133,
             "distance": 1.4,
+            "id": 64641,
             "y": 0,
             "z": 7,
-            "show": [238, 126],
+            "show": [268, 126],
             "coordinate": [970, 286]
           }, {
             "name": "经济金融",
             "number": 23213,
             "distance": 5,
+            "id": 64642,
             "y": 0,
             "z": 4.3,
-            "show": [280, 157],
+            "show": [310, 157],
             "coordinate": [970, 434]
           }, {
             "name": "健康中国",
             "number": 343234,
             "distance": 7.8,
+            "id": 64643,
             "y": 0.2,
             "z": 4,
-            "show": [289, 182],
+            "show": [319, 172],
             "coordinate": [1109, 351]
           }, {
             "name": "群众办事",
             "number": 231234,
+            "id": 64644,
             "distance": 7,
             "y": 0.1,
             "z": -1,
-            "show": [325, 207],
+            "show": [355, 207],
             "coordinate": [1016, 180]
           }, {
             "name": "依法治国",
             "number": 12357,
             "distance": 3.8,
+            "id": 64645,
             "y": 0,
             "z": -8,
-            "show": [17, 281],
+            "show": [47, 261],
             "coordinate": [1094, 231]
           }, {
             "name": "乡村振兴",
             "number": 542344,
             "distance": 5.8,
+            "id": 64646,
             "y": 0,
             "z": -4,
-            "show": [353, 234],
+            "show": [383, 234],
             "coordinate": [1212, 285]
           }
         ]
@@ -334,7 +410,7 @@
         this.data.renderer.setSize(this.data.width, this.data.height);
         this.data.renderer.sortObjects = true;
         this.data.WebGLCanvas.appendChild(this.data.renderer.domElement);
-        this.data.camera = new THREE.PerspectiveCamera(400, this.data.width / this.data.height, 1, 2000);
+        this.data.camera = new THREE.PerspectiveCamera(400, this.data.width / this.data.height, 1, 5000);
         this.data.camerapos.positionZ = this.data.camera.position.z = 20;
         this.data.camerapos.positionY = this.data.camera.position.y = 6;
         this.data.camerapos.positionX = 0;
@@ -433,12 +509,15 @@
           if (config.show[1] < config.show[0]) {
             if ((ro > config.show[0] || ro < config.show[1])) {
               if (element.hiddIt) {
-                element.hiddIt = false
                 element.visible = true
-                TweenLite.to(element.children[0].material, 1, {
-                  opacity: 1
-                })
+                if (element.hiddIt) {
+                  TweenLite.fromTo(element.children[0].material, 1, {opacity: 0}, {opacity: 1})
+                }
+                element.hiddIt = false
                 // element.children[0].material.visible = true
+              }
+              if (ro > (config.show[1] - 20) && ro < config.show[0] && element.children[0].material.opacity == 1) {
+                TweenLite.fromTo(element.children[0].material, 2, {opacity: 1}, {opacity: 0})
               }
             } else {
               if (!element.hiddIt) {
@@ -449,11 +528,15 @@
           } else {
             if ((ro > config.show[0] && ro < config.show[1])) {
               if (element.hiddIt) {
-                element.hiddIt = false
                 element.visible = true
-                TweenLite.to(element.children[0].material, 1, {
-                  opacity: 1
-                })
+                if (element.hiddIt) {
+                  TweenLite.fromTo(element.children[0].material, 1, {opacity: 0}, {opacity: 1})
+                }
+                element.hiddIt = false
+              }
+              if (ro > (config.show[1] - 20) && element.children[0].material.opacity == 1) {
+                element.children[0].material.opacity = 0.99
+                TweenLite.fromTo(element.children[0].material, 2, {opacity: 1}, {opacity: 0})
               }
             } else {
               if (!element.hiddIt) {
@@ -637,8 +720,21 @@
         var _this6 = this;
 
         var ind = 0;
-        this.data.mockData.forEach(function(element) {
-          _this6.addWishes(ind++, element);
+        $.getJSON("http://19diaocha.people.cn/netadd/660.php",function(result) {
+          // console.log(result)
+          // 预处理数据
+          var tempData = {}
+          for (var index = 0; index < result.length; index++) {
+            var element = result[index];
+            tempData[element.vid] = element.bnum
+          }
+          _this6.data.mockData.forEach(function(element) {
+            // 使用接口的数据
+            if (tempData[element.id]) {
+              element.number = tempData[element.id]
+            }
+            _this6.addWishes(ind++, element);
+          });
         });
       },
       "creatText": function creatText(info, config) {
@@ -701,6 +797,7 @@
 
         var textTemp = this.makeTextSprite(info, {});
         textTemp.name = ind;
+        this.data.objList[ind] = textTemp
         this.data.clickObjects.push(textTemp); // u.position.y = -2
 
         part.add(textTemp);
@@ -757,6 +854,9 @@
             var wishes = _this.data.mockData[intersects[0].object.name];
             wishes.number++
             intersects[0].object.material.map = _this.creatText(wishes, {});
+            showHeart(event)
+            console.log(_this.data.mockData[intersects[0].object.name])
+            vote(_this.data.mockData[intersects[0].object.name].id)
             // 点击后心来个放大效果
             // console.log(intersects[0].object.material)
             // new TweenMax(intersects[0].object.scale, 0.3, {
@@ -789,13 +889,30 @@
         _this.data.camera.updateProjectionMatrix();
         // 重新设置渲染器渲染范围
         _this.data.renderer.setSize(window.innerWidth, window.innerHeight);
+      },
+      updataData: function () {
+        var objList = this.data.objList
+        for (var index = 0; index < objList.length; index++) {
+          var element = objList[index];
+          var wishes = this.data.mockData[index];
+          wishes.number++
+          element.material.map = this.creatText(wishes, {});
+        }
+        // console.log(this.data.objList)
       }
     }
     $(document).ready(function() {
-      homePage.created()
+      // 判断是否为手机模式
+      if ((window.innerWidth / window.innerHeight) > 1) {
+        // 初始化3D
+        homePage.created()
+      } else {
+        document.body.classList.add('phone')
+        document.getElementsByClassName('page')[0].style.display = 'block'
+      }
     })
   </script>
 
 </body>
-
+  
 </html>

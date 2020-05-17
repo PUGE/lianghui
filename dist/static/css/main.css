@@ -128,3 +128,19 @@ h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, pre, form, bu
 .ie-logo-2 {
   right: 315px;
 }
+
+canvas {
+  cursor: pointer;
+}
+
+/* 手机屏幕下也能正常显示 */
+.phone .bg-video, .phone #WebGLCanvas {
+  display: none;
+}
+
+.phone .logo {
+  left: 1%;
+  top: 1%;
+  height: 6vh;
+  width: auto;
+}
